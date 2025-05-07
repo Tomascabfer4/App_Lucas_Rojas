@@ -1,0 +1,284 @@
+/* Aseguramos que el ion-content ocupe todo el viewport */
+.login-page {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+/* Contenedor principal a pantalla completa */
+.login-container {
+  position: relative;
+  /* Elemento de referencia para posicionamiento absoluto */
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+/* Sección Izquierda (fondo con degradado y clip-path) */
+.left-section {
+  position: relative;
+  /* Para que los elementos absolutos se posicionen respecto a esta sección */
+  flex: 0 0 60%;
+  background: linear-gradient(to bottom right, #6A80B0, #006acd);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  clip-path: url(#curveClip);
+
+  h2 {
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    line-height: 1.4;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Capa de patrón sutil (opcional) */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("../../../assets/imagenes/lineas.png");
+    /* O el patrón que prefieras */
+    opacity: 0.01;
+    z-index: 0;
+  }
+
+  /* Todos los blobs se posicionan absolutamente */
+  .blob-container {
+    position: absolute;
+    z-index: 1;
+  }
+
+  /* Blob grande 1: ubicado en la esquina superior izquierda, saliendo un poco del contenedor */
+  .blob-container.blob-large-1 {
+    top: 0%;
+    left: 60%;
+
+    .blob {
+      width: 750px;
+      animation: blobAnimation1 20s ease-in-out infinite;
+    }
+  }
+
+  /* Blob grande 2: ubicado en la esquina inferior derecha, saliendo ligeramente del contenedor */
+  .blob-container.blob-large-2 {
+    bottom: -55%;
+    right: 30%;
+
+    .blob {
+      width: 700px;
+      animation: blobAnimation2 20s ease-in-out infinite;
+    }
+  }
+
+  /* Blob grande 3: centrado en la sección (superposición sutil) */
+  .blob-container.blob-large-3 {
+    top: 55%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+
+    .blob {
+      width: 750px;
+      animation: blobAnimation3 20s ease-in-out infinite;
+    }
+  }
+
+  .left-message {
+    position: absolute;
+    top: 0%;        /* Ajusta la distancia desde la parte superior */
+    left: 0%;       /* Ajusta la distancia desde la izquierda */
+    width: 80%;      /* Ocupa el 80% del ancho de la sección */
+    text-align: center;
+    padding: 0.75rem 0.75rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    z-index: 2;
+  }
+  /* Animación para Blob 1 */
+  @keyframes blobAnimation1 {
+    0% {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+
+    25% {
+      transform: translate(10px, -20px) scale(1.05) rotate(2deg);
+    }
+
+    50% {
+      transform: translate(-5px, -10px) scale(0.95) rotate(-3deg);
+    }
+
+    75% {
+      transform: translate(5px, 10px) scale(1.02) rotate(1deg);
+    }
+
+    100% {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+  }
+}
+
+
+
+/* Animación para Blob 2 */
+@keyframes blobAnimation2 {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(-15px, 10px) scale(1.1) rotate(-4deg);
+  }
+
+  50% {
+    transform: translate(10px, -5px) scale(0.9) rotate(3deg);
+  }
+
+  75% {
+    transform: translate(-10px, 15px) scale(1.05) rotate(-2deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+/* Animación para Blob 3 */
+@keyframes blobAnimation3 {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(5px, 20px) scale(1.05) rotate(3deg);
+  }
+
+  50% {
+    transform: translate(-5px, 5px) scale(0.95) rotate(-3deg);
+  }
+
+  75% {
+    transform: translate(15px, -10px) scale(1.08) rotate(2deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+
+/* Sección Derecha (fondo blanco) */
+.right-section {
+  flex: 0 0 40%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .logo {
+    width: 350px;
+    /* Ajusta el tamaño según necesites */
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  form {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 1.5rem;
+  }
+
+  ion-item {
+    --border-radius: 30px;
+    margin-bottom: 1rem;
+    --background: #f2f2f2;
+    --inner-border-width: 0px;
+  }
+
+  .login-button {
+    --border-radius: 30px;
+    font-weight: bold;
+    --background: var(--ion-color-secondary);
+    width: 80%;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  .contact-info {
+    font-size: 0.9rem;
+    color: #777;
+    text-align: center;
+
+    a {
+      color: #6A80B0;
+      text-decoration: none;
+    }
+  }
+}
+
+/* Imagen superpuesta a ambas secciones */
+.image-empresa {
+  position: absolute;
+  /* Centrado horizontal absoluto */
+  left: 15%;
+  transform: translateX(-50%);
+  /* Altura automática, ancho relativo al viewport */
+  width: clamp(200px, 50vw, 700px);
+  height: auto;
+  /* Posición vertical relativa */
+  bottom: -5%;
+  z-index: 3;
+  animation: levitate 3s ease-in-out infinite;
+}
+
+
+
+/* Animación de levitación */
+@keyframes levitate {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+@media (max-width: 768px) {
+  .image-empresa {
+    position: relative !important;
+    left: auto !important;
+    transform: none !important;
+    bottom: auto !important;
+    margin: 1rem auto 0;     /* espacia desde el contenido */
+    display: block;
+    width: 80%;              /* ocupa el 80% del ancho móvil */
+    max-width: 300px;        /* limite superior en móvil */
+  }
+}

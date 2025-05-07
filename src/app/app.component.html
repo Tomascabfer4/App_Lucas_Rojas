@@ -1,0 +1,51 @@
+<ion-app>
+  <ion-split-pane contentId="main-content" when="false">
+    <ion-menu id="mainMenu" contentId="main-content" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list">
+          <ion-img
+            src="assets/imagenes/logo.png"
+            alt="lucas_rojas_imagen"
+          ></ion-img>
+          <br>
+          <ion-label><Strong>Bienvenido, {{ userName }}</Strong></ion-label>
+          <br>
+          <br>
+          @for (p of appPages; track p; let i = $index) {
+            <ion-menu-toggle auto-hide="false">
+              <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+                <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          }
+        </ion-list>
+        <ion-list class="fixed-bottom">
+
+          <ion-item lines="none">
+            <ion-label>Cambiar Tema</ion-label>
+            <ion-toggle
+              class="daynight-toggle"
+              slot="end"
+              [checked]="isDark"
+              (ionChange)="toggleTheme()"
+            ></ion-toggle>
+          </ion-item>
+
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button (click)="logout()">
+              <ion-icon
+                aria-hidden="true"
+                name="exit-outline"
+                slot="start"
+              ></ion-icon>
+              <ion-label>Cerrar sesión</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

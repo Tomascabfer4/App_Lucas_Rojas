@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Estadísticas de Fianzas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onCerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Fianzas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+
+            <div class="total-fianzas">
+              Importe total fianzas activas: {{ totalFianzasFormateada }}
+            </div>
+
+            <div class="table-container">
+              <table class="rounded-table">
+                <thead>
+                  <tr class="table-header">
+                    <th>Cliente</th>
+                    <th>Fianza (€)</th>
+                    <th>Formalización</th>
+                    <th>Fin Contrato</th>
+                    <th>Tiempo Restante</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let grupo of fianzasPorAnio">
+                    <!-- Separador de año -->
+                    <tr class="table-row year-separator">
+                      <td colspan="5">
+                        <strong>AÑO {{ grupo.year }} — Total: {{ grupo.total }}</strong>
+                      </td>
+                    </tr>
+                
+                    <!-- Filas de fianzas para ese año -->
+                    <tr *ngFor="let f of grupo.items" class="table-row">
+                      <td>{{ f.cliente }}</td>
+                      <td>{{ f.fianzaFormateada }}</td>
+                      <td>{{ f.fechaFormalizacion
+                            ? (f.fechaFormalizacion | date:'dd/MM/yyyy')
+                            : '-' }}</td>
+                      <td>{{ f.fechaFinContrato | date:'dd/MM/yyyy' }}</td>
+                      <td>
+                        {{ f.tiempoRestante.years }} a,
+                        {{ f.tiempoRestante.months }} m,
+                        {{ f.tiempoRestante.days }} d
+                      </td>
+                    </tr>
+                  </ng-container>
+                
+                  <!-- Si no hay fianzas -->
+                  <ng-template #noData>
+                    <tr>
+                      <td colspan="5" class="ion-text-center">
+                        No hay datos de fianzas para mostrar.
+                      </td>
+                    </tr>
+                  </ng-template>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

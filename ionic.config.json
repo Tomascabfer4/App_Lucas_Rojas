@@ -1,0 +1,7 @@
+{
+  "name": "App_Lucas_Rojas",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

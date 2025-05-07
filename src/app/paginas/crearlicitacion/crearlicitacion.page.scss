@@ -1,0 +1,106 @@
+ion-menu-button {
+  color: var(--ion-color-primary);
+}
+
+ion-content.custom-content {
+  --background: #6a80b0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-container {
+  display: flex; /* Agregado para activar flexbox */
+  justify-content: center;
+  align-items: center;
+}
+
+ion-card {
+  position: relative;
+  margin: 1%; /* Centrado automático */
+  width: 90%; /* Puedes ajustar este ancho según convenga */
+  max-height: 87vh;
+  border-radius: 20px !important;
+  overflow: visible;
+  transition: transform 0.3s ease; /* Transición suave al hover */
+}
+
+ion-card:hover {
+  transform: scale(1.03); /* Aumenta el tamaño del card */
+}
+
+ion-label {
+  font-weight: 600;
+  color: #ffffff; /* Texto en blanco para buen contraste con el fondo */
+  margin-bottom: 5px;
+}
+
+ion-grid {
+  width: 100%;
+}
+
+ion-col {
+  padding: 10px;
+}
+
+.ion-text-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* En lugar de center */
+  align-items: center;
+}
+
+.ion-text-center img {
+  max-width: 70%;
+  height: auto;
+}
+
+.form-column {
+  max-height: 87vh; /* Ajusta la altura máxima que deseas para el formulario */
+  overflow-y: auto; /* Permite scroll vertical si el contenido excede la altura */
+  padding: 10px; /* Puedes ajustar el padding según sea necesario */
+}
+
+.company-logo {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 50px; /* Ajusta según lo necesario */
+  height: auto;
+}
+
+.custom-modal {
+  --border-radius: 10px;
+}
+
+::ng-deep .custom-select-alert .alert-wrapper {
+  border-radius: 10px !important;
+}
+
+/* --- AJUSTES PARA .header-content (contiene solo el título) --- */
+/* Este div es el contenedor flex del título en tu HTML */
+.header-content {
+  display: flex; /* Mantener display flex como estaba */
+  align-items: center; /* Mantener alineación vertical al centro como estaba */
+
+}
+
+/* Estilos para ion-title específicamente dentro de .header-content */
+.header-content ion-title {
+  padding: 0; /* Eliminar padding por defecto */
+  color: inherit; /* Asegurar que hereda el color del padre .header-content */
+}
+
+/* --- Ajuste para pantallas pequeñas (Media Query) --- */
+@media (max-width: 768px) {
+  /* Ajustes para el contenedor .header-content en pantallas pequeñas */
+  .header-content {
+    margin-left: 8px; /* Esta línea ya estaba en tu media query original */
+  }
+
+  /* Ajustes para ion-title dentro de .header-content en pantallas pequeñas */
+  .header-content ion-title {
+    font-size: 1.1rem; /* Mantener el tamaño de fuente reducido en móvil */
+  }
+}

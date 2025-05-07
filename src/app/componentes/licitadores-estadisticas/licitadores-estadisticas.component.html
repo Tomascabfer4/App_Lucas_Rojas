@@ -1,0 +1,138 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Estadísticas de Licitadores</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onCerrar()">Cerrar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <!-- *** Aquí ponemos los chips de restaurar eliminados *** -->
+            <div
+              *ngIf="removedPresentadores.length || removedYears.length"
+              class="removed-chips-header"
+            >
+              <ion-chip
+                class="chips-licitadores"
+                *ngFor="let p of removedPresentadores"
+                (click)="onRestaurarPresentador(p)"
+              >
+                {{ p }}
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-chip>
+
+              <ion-chip
+                class="chips-licitadores"
+                *ngFor="let y of removedYears"
+                (click)="onRestaurarAnio(y)"
+              >
+                {{ y }}
+                <ion-icon name="add-circle-outline"></ion-icon>
+              </ion-chip>
+            </div>
+            <ion-card-title>Licitadores</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="table-container">
+              <table class="rounded-table">
+                <thead>
+                  <tr class="table-header">
+                    <th>Nombre</th>
+                    <th>Presentadas</th>
+                    <th>En Estudio</th>
+                    <th>Adjudicadas</th>
+                    <th>No Adjudicadas</th>
+                    <th>Desestimadas</th>
+                    <th>Importe (€)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 2) Filas de estadísticas por año -->
+                  <tr *ngFor="let y of yearEstadisticas" class="table-row year-row previous-year-row">
+                    <td class="nombre-cell">
+                      <div class="nombre-with-action">
+                        <span class="nombre-text"><strong>AÑO {{ y.year }}</strong></span>
+                        <ion-button
+                          fill="clear"
+                          size="small"
+                          color="dark"
+                          (click)="onQuitarAnio(y.year)"
+                          title="Excluir año"
+                        >
+                          <ion-icon name="remove-circle-outline"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </td>
+                    <td><strong>{{ y.presentadas }}</strong></td>
+                    <td><strong>{{ y.enEstudio }}</strong></td>
+                    <td><strong>{{ y.adjudicadas }}</strong></td>
+                    <td><strong>{{ y.noAdjudicadas }}</strong></td>
+                    <td><strong>{{ y.desestimadas }}</strong></td>
+                    <td><strong>{{ y.importeFormateado }}</strong></td>
+                  </tr>
+                  <!-- FILA DE TOTALES -->
+                  <tr class="table-row totals-row">
+                    <td><strong>TOTAL</strong></td>
+                    <td>
+                      <strong>{{ totalPresentadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ totalEnEstudio }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ totalAdjudicadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ totalNoAdjudicadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ totalDesestimadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{
+                        totalImporte
+                          | currency : "EUR" : "symbol" : "1.2-2" : "es-ES"
+                      }}</strong>
+                    </td>
+                  </tr>
+
+                  <tr
+                    *ngFor="let p of licitadoresEstadisticas"
+                    class="table-row"
+                  >
+                    <td class="nombre-cell">
+                      <div class="nombre-with-action">
+                        <span class="nombre-text">{{ p.nombre }}</span>
+                        <ion-button
+                          fill="clear"
+                          size="small"
+                          color="dark"
+                          (click)="onQuitarPresentador(p.nombre)"
+                          title="Eliminar"
+                        >
+                          <ion-icon name="remove-circle-outline"></ion-icon>
+                        </ion-button>
+                      </div>
+                    </td>
+                    <td>{{ p.presentadas }}</td>
+                    <td>{{ p.enEstudio }}</td>
+                    <td>{{ p.adjudicadas }}</td>
+                    <td>{{ p.noAdjudicadas }}</td>
+                    <td>{{ p.desestimadas }}</td>
+                    <td>{{ p.importeFormateado }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,215 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Importar la fuente deseada */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+@import "@ionic/angular/css/palettes/dark.class.css";
+// @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Aplicar la fuente globalmente */
+:root {
+    --ion-font-family: 'Montserrat', sans-serif;
+}
+
+// Para que tenga un borde redondeado al seleccionar mes y año en el ion-datetime
+ion-datetime {
+    --wheel-highlight-background: rgb(218, 216, 255);
+    --wheel-highlight-border-radius: 48px;
+}
+
+/* ================= DARK MODE (forzado con .dark) ============ */
+.dark {
+    /* Fondo general de Ionic (ion-app usa --ion-background-color) */
+    --ion-background-color: #121212 !important;
+    /* Color de texto por defecto */
+    --ion-text-color: #f5f5f5 !important;
+    /* Si usas cards, listas, modales… también overridea su fondo */
+    --ion-color-step-50: #1e1e1e !important;
+    /* Ejemplos de otros overrides que quizá necesites: */
+    --ion-toolbar-background: #1f1f1f !important;
+    --ion-toolbar-color: #f5f5f5 !important;
+    --ion-item-background: #121212 !important;
+    --ion-item-color: #f5f5f5 !important;
+
+    ion-datetime {
+        --background: var(--ion-item-background) !important;
+        --color: var(--ion-text-color) !important;
+        --background-rgb: 245, 235, 247;
+        --wheel-highlight-background: rgb(218, 216, 255);
+        --wheel-highlight-border-radius: 48px;
+        --wheel-fade-background-rgb: 41, 59, 51;
+    }
+
+    .boton-derecho,
+    .boton-izquierdo {
+        --background: #121212 !important;
+        --color: var(--ion-color-primary) !important;
+    }
+
+    ion-checkbox {
+        --border-color: var(--ion-color-light) !important;
+    }
+
+    ion-datetime-button::part(native) {
+        background: var(--ion-item-color) !important;
+        color: #121212 !important;
+    }
+
+    #container strong {
+        /* Usa el color de texto por defecto en oscuro */
+        color: var(--ion-text-color) !important;
+    }
+
+    .label-value {
+        /* Un gris más claro o el mismo texto estándar */
+        color: var(--ion-color-light) !important;
+    }
+
+    .label-title {
+        /* Usa el color de texto por defecto en oscuro */
+        color: var(--ion-color-primary) !important;
+    }
+
+    .total-fianzas {
+        color: var(--ion-color-light) !important;
+    }
+
+    ion-card-title {
+        color: var(--ion-color-light) !important;
+    }
+
+    .chips-licitadores {
+        background: var(--ion-item-color) !important;
+        color: #121212 !important;
+    }
+
+    /* Sección Derecha (fondo blanco) */
+    .right-section {
+        background: var(--ion-item-background) !important;
+
+        h2 {
+            color: #fff !important;
+        }
+
+        ion-icon {
+            color: #000 !important;
+        }
+
+        ion-item {
+            color: #000 !important;
+            --background: #fff !important;
+
+        }
+
+        .login-button {
+            --background: var(--ion-color-primary) !important;
+        }
+
+        .contact-info {
+            color: #fff !important;
+
+            a {
+                color: var(--ion-color-primary) !important;
+            }
+        }
+    }
+
+    .left-section {
+        .left-message {
+            color: #000 !important;
+        }
+    }
+
+    ion-chip {
+        background: var(--ion-item-color) !important;
+    }
+
+    ion-searchbar {
+        --background: var(--ion-item-background) !important;
+        --color: var(--ion-text-color) !important;
+        --placeholder-color: var(--ion-color-light) !important;
+        --icon-color: var(--ion-text-color) !important;
+    }
+
+    .table-row:nth-child(odd) {
+        background-color: #2c2929 !important; 
+    }
+    .table-row:nth-child(odd) td {
+        color: #fff !important; /* texto más suave en fila impar */
+      }
+
+    /* Hover sobre fila */
+    .table-row:hover {
+        background-color: #d0e3ff !important;
+        color: #000 !important;
+    }
+
+    /* Hover sobre fila */
+    .table-row:hover td {
+        color: #000 !important;
+    }
+
+    /* 2) Ajustamos el padding de las celdas para hacerla más delgada */
+    .rounded-table tr.year-separator td {
+        color: #333 !important;
+    }
+
+    /* 3) Para evitar que las reglas de filas alternas la afecten */
+    .rounded-table tr.year-separator:nth-child(even),
+    .rounded-table tr.year-separator:nth-child(odd) {
+        background: antiquewhite !important;
+    }
+
+    tr.table-row.previous-year-row:nth-child(odd),
+    tr.table-row.previous-year-row:nth-child(even) {
+        background-color: antiquewhite !important;
+    }
+
+    tr.table-row.previous-year-row td:nth-child(odd) {
+        color: #000 !important;
+    }
+
+    ion-alert {
+        .alert-radio-label.sc-ion-alert-md {
+            color: var(--ion-text-color, #f5f5f5);
+        }
+
+        [aria-checked="true"].sc-ion-alert-md .alert-radio-label.sc-ion-alert-md {
+            color: var(--ion-color-step-850, #f5f5f5);
+        }
+    }
+
+}

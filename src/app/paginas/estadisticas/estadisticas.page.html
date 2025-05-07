@@ -1,0 +1,301 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+     <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title><strong>Estadísticas</strong></ion-title> 
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <!-- Row 1: Nueva fila con 2 columnas -->
+    <ion-row>
+      <!-- IZQUIERDA: botones + contadores -->
+      <ion-col size="12" sizeMd="8.5">
+        <!-- fila de botones -->
+        <div class="buttons-row">
+          <ion-button
+            class="boton-izquierdo"
+            (click)="abrirLicitadores()"
+          >
+            <div class="btn-content">
+              <img src="assets/imagenes/licitadores.png"  />
+              <span>Estadísticas de Licitadores</span>
+            </div>
+          </ion-button>
+          <ion-button
+            class="boton-derecho"
+            (click)="abrirContratos()"
+          >
+            <div class="btn-content btn-contentDerecho">
+              <img src="assets/imagenes/dineroFianza.png" />
+              <span>Estadísticas de Fianzas</span>
+            </div>
+          </ion-button>
+        </div>
+        <!-- contadores justo debajo -->
+        <ion-card class="card-stats">
+          <ion-card-content>
+            <div class="stats-container">
+              <div
+                *ngFor="let stat of statsResumen"
+                [ngStyle]="{'border-color': stat.color}"
+                class="stat-box"
+              >
+                <div [style.color]="stat.color" class="stat-value">
+                  {{ stat.value }}
+                </div>
+                <div class="stat-label">{{ stat.label }}</div>
+                <div class="stat-percent">{{ stat.percent }}%</div>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- DERECHA: logo -->
+      <ion-col size="12" sizeMd="3.5">
+        <ion-card>
+          <ion-card-content class="ion-text-center">
+            <img src="assets/imagenes/logo.png" height="140" />
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Row 3: Fila inferior con la tabla y el gráfico pegados al bottom -->
+    <ion-row>
+      <!-- Card del listado (Filtros + Tabla) -->
+      <ion-col size="12" sizeMd="8.5">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title> <strong>{{ mostrarTituloListado() }}</strong></ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-grid>
+              <ion-row>
+                <!-- Columna de Filtros -->
+                <ion-col size="12" sizeMd="3.5">
+                  <div class="filters-container">
+                    <!-- Acordeón para "Presentado Por" -->
+                    <ion-accordion-group>
+                      <ion-accordion value="presentador">
+                        <ion-item slot="header" color="light">
+                          <ion-label><strong>Presentado Por</strong></ion-label>
+                        </ion-item>
+                        <div slot="content">
+                          <ion-list>
+                            <ion-item *ngFor="let p of presentadores">
+                              <ion-checkbox
+                                slot="start"
+                                [checked]="presentadoresSeleccionados.includes(p)"
+                                (ionChange)="togglePresentadador(p, $event)"
+                              >
+                              </ion-checkbox>
+                              <ion-label>{{ p }}</ion-label>
+                            </ion-item>
+                          </ion-list>
+                        </div>
+                      </ion-accordion>
+                      <ion-accordion value="estadoFinal">
+                        <ion-item slot="header" color="light">
+                          <ion-label><strong>Estado Final</strong></ion-label>
+                        </ion-item>
+                        <div slot="content">
+                          <ion-list>
+                            <ion-item *ngFor="let e of estadosFinales">
+                              <ion-checkbox
+                                slot="start"
+                                [checked]="estadosFinalesSeleccionados.includes(e)"
+                                (ionChange)="toggleEstadoFinal(e, $event)"
+                              >
+                              </ion-checkbox>
+                              <ion-label>{{ e }}</ion-label>
+                            </ion-item>
+                          </ion-list>
+                        </div>
+                      </ion-accordion>
+                    </ion-accordion-group>
+
+                    <!-- Filtros de rango de fechas (modales) -->
+                    <ion-item>
+                      <ion-label><strong>Desde Fecha</strong></ion-label>
+                      <ion-chip (click)="openDesdeModal()">
+                        {{ fechaDesde ? (fechaDesde | date: 'd MMM y') :
+                        'Seleccionar' }}
+                      </ion-chip>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label><strong>Hasta Fecha</strong></ion-label>
+                      <ion-chip (click)="openHastaModal()">
+                        {{ fechaHasta ? (fechaHasta | date: 'd MMM y') :
+                        'Seleccionar' }}
+                      </ion-chip>
+                    </ion-item>
+                    <!-- Botón para limpiar filtros -->
+                    <ion-button
+                      fill="outline"
+                      expand="block"
+                      (click)="limpiarBusqueda()"
+                    >
+                      Limpiar Filtros
+                    </ion-button>
+                  </div>
+                </ion-col>
+
+                <!-- Columna de la Tabla -->
+                <ion-col size="12" sizeMd="8.5">
+                  <div class="table-container">
+                    <table class="rounded-table">
+                      <thead>
+                        <tr class="table-header">
+                          <th>Presentado Por</th>
+                          <th>Cliente</th>
+                          <th>Importe</th>
+                          <th>Estado</th>
+                          <th>Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          *ngFor="let lic of licitacionesFiltradas"
+                          class="table-row"
+                        >
+                          <td>{{ lic.presentadapor == null ? '(Nadie)' : lic.presentadapor }}</td>
+                          <td>{{ lic.cliente }}</td>
+                          <td>{{ lic.importe }} €</td>
+                          <td>{{ lic.estadofinal }}</td>
+                          <td>
+                            {{ lic.fechapresentacion | date:'mediumDate' }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <!-- Card del gráfico -->
+      <ion-col size="12" sizeMd="3.5">
+        <ion-card>
+          <ion-card-content>
+            <div class="grafico-container">
+              <canvas
+                baseChart
+                [type]="'pie'"
+                [datasets]="pieChartDatasets"
+                [labels]="pieChartLabels"
+                [options]="pieChartOptions"
+                [plugins]="pieChartPlugins"
+                [legend]="pieChartLegend"
+              >
+              </canvas>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Modales para selección de fecha -->
+  <ion-modal #desdeModal [keepContentsMounted]="true" class="custom-modal">
+    <ng-template>
+      <ion-datetime
+        presentation="date"
+        displayFormat="d MMM y"
+        [(ngModel)]="fechaDesdeTemp"
+      >
+      </ion-datetime>
+      <div class="modal-buttons">
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          (click)="cancelDesdeModal()"
+          >Cancelar</ion-button
+        >
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="danger"
+          (click)="resetDesdeFecha()"
+          >Reiniciar</ion-button
+        >
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="applyDesdeModal()"
+          >Aplicar</ion-button
+        >
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal #hastaModal [keepContentsMounted]="true" class="custom-modal">
+    <ng-template>
+      <ion-datetime
+        presentation="date"
+        displayFormat="d MMM y"
+        [(ngModel)]="fechaHastaTemp"
+      >
+      </ion-datetime>
+      <div class="modal-buttons">
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="medium"
+          (click)="cancelHastaModal()"
+          >Cancelar</ion-button
+        >
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="danger"
+          (click)="resetHastaFecha()"
+          >Reiniciar</ion-button
+        >
+        <ion-button
+          expand="block"
+          fill="outline"
+          color="primary"
+          (click)="applyHastaModal()"
+          >Aplicar</ion-button
+        >
+      </div>
+    </ng-template>
+  </ion-modal>
+
+  <!-- Superposicion de Licitadores -->
+  <div
+    *ngIf="verLicitadoresSuperposicion"
+    class="full-overlay"
+    [class.closing]="isClosing"
+  >
+    <app-licitadores-estadisticas
+      [licitaciones]="licitacionesFiltradas"
+      [presentadores]="presentadores"
+      (cerrar)="cerrarLicitadores()"
+    >
+    </app-licitadores-estadisticas>
+  </div>
+
+  <!--  Superposicion de Contratos -->
+  <div
+    *ngIf="verContratosSuperposicion"
+    class="full-overlay"
+    [class.closing]="isClosing"
+  >
+    <!-- aquí el componente correcto -->
+    <app-fianzas-estadisticas
+      [licitaciones]="licitaciones"
+      (cerrar)="cerrarContratos()"
+    ></app-fianzas-estadisticas>
+  </div>
+  
+</ion-content>

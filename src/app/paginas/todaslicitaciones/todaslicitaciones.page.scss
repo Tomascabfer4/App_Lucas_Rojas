@@ -1,0 +1,66 @@
+/* Keep ion-menu-button and ion-content styles */
+
+ion-menu-button {
+  color: var(--ion-color-primary);
+}
+
+ion-content {
+  --background: #6A80B0;
+}
+
+/* --- AJUSTES PARA .header-content (contenedor flex de título y componente) --- */
+
+.header-content {
+  display: flex; /* Convertirlo en contenedor flex - Ya estaba bien */
+  align-items: center; /* Alinear elementos verticalmente al centro - Ya estaba bien */
+
+  /* Usar 'gap' para poner espacio ENTRE el título y el componente */
+  gap: 8px; /* Ajusta este valor para el espacio deseado */
+
+  overflow: hidden; /* Ocultar cualquier contenido que se desborde */
+
+  flex: 0 0 auto; /* Shorthand */
+
+  /* Asegurar que los elementos internos (Título y Componente) se alineen al inicio */
+  justify-content: flex-start; /* *** AÑADIR *** */
+
+  
+}
+
+/* --- ESTILOS PARA ion-title DENTRO DE .header-content --- */
+.header-content ion-title {
+  /* Eliminar padding por defecto de ion-title que puede interferir */
+  padding: 0;
+  /* Permitir que el título se encoja por debajo de su tamaño intrínseco si es necesario */
+  min-width: 0;
+  /* Manejo de texto largo: truncar con puntos suspensivos */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Evitar que el texto salte de línea */
+  overflow: hidden; /* Ocultar el texto que se desborda */
+
+  /* *** PROPIEDADES FLEX CLAVE PARA EL TÍTULO DENTRO DE .header-content *** */
+  flex: 0 1 auto; /* Shorthand */
+
+}
+
+/* --- ESTILOS PARA app-contarlicitaciones DENTRO DE .header-content --- */
+/* Este componente actúa como el "chip" o contador al lado del título */
+.header-content app-contarlicitaciones {
+
+    flex: 0 0 auto; /* Shorthand */
+
+    margin: 0;
+
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    margin-left: 8px; /* Usaba margin-left en el original, mantengamos eso */
+  }
+
+  /* *** El selector ion-title DENTRO de .header-content ES correcto aquí *** */
+  .header-content ion-title {
+    font-size: 1.1rem; /* Reducir tamaño de fuente en móvil - Ya estaba bien */
+  }
+
+}

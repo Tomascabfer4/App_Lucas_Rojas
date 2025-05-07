@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <div class="chips-container">
+      <ion-title><strong>Mis Licitaciones</strong></ion-title>
+      <ion-chip class="chip-no-action" color="success">
+        {{ misLicitaciones }}
+      </ion-chip>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Se le pasan los valores por defecto para que el componente se reinicie -->
+  <app-filtrarlicitaciones
+    (filtrosChanged)="onFiltrosChanged($event)">
+  </app-filtrarlicitaciones>
+
+  <app-listarlicitaciones
+    [busquedaCliente]="busquedaCliente"
+    [numExpediente]="numExpediente"
+    [desdeFecha]="desdeFecha"
+    [hastaFecha]="hastaFecha"
+    [presentadapor]="usuario">
+  </app-listarlicitaciones>
+</ion-content>

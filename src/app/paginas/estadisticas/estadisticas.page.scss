@@ -1,0 +1,405 @@
+/*****************************************
+ * ESTRUCTURA GENERAL
+ *****************************************/
+ ion-menu-button {
+  color: var(--ion-color-primary);
+}
+
+/*****************************************
+ * ENCABEZADO
+ *****************************************/
+
+/* --- AJUSTES PARA ion-title DIRECTAMENTE DENTRO DE ion-toolbar --- */
+/* En esta plantilla, el ion-title es un hijo directo de ion-toolbar */
+ion-toolbar ion-title {
+  /* Eliminar padding por defecto de ion-title que podría afectar el espaciado */
+  padding: 0;
+
+}
+
+
+/* --- Ajuste para pantallas pequeñas (Media Query) --- */
+/* Las reglas dentro de este media query aplican solo a pantallas de 768px o menos */
+@media (max-width: 768px) {
+  /* Ajustes para ion-title directamente en ion-toolbar en pantallas pequeñas */
+  ion-toolbar ion-title {
+    margin-left: 8px; /* Ajusta este valor si necesitas más o menos espacio */
+
+    /* Reducir tamaño de fuente en móvil */
+    font-size: 1.1rem; /* Este tamaño estaba en tus media queries anteriores */
+  }
+}
+
+ion-content {
+  --background: #6A80B0; /* Fondo original */
+  
+}
+
+/*****************************************
+ * ION-CARD
+ *****************************************/
+
+/* Transición suave en los ion-card */
+ion-card {
+  transition: transform 0.3s ease; /* Animación suave */
+  border-radius: 10px; /* Bordes redondeados */
+  overflow: hidden; /* Oculta el contenido que se desborda */
+  display: flex; /* Usamos Flexbox para el diseño */
+  flex-direction: column; /* Organiza el contenido de los ion-cards en columna */
+  height: 100%; /* Hace que el ion-card ocupe todo el espacio disponible */
+}
+
+/* Efecto hover para aumentar el tamaño del ion-card */
+ion-card:hover {
+  transform: scale(1.03); /* Aumenta el tamaño del card */
+}
+
+/*****************************************
+ * FILTRO Y TABLA DE ESTADISTICAS
+ *****************************************/
+
+/* Redondear bordes del acordeón */
+ion-accordion-group {
+  border-radius: 8px; /* Redondea los bordes del grupo de acordeones */
+  overflow: hidden;   /* Asegura que el contenido se recorte de acuerdo a los bordes redondeados */
+}
+
+/* Estilo de la tabla */
+.rounded-table {
+  border: 1px solid #b8daff;
+  border-radius: 8px;     /* Redondea los bordes de la tabla */
+  margin-bottom: 1%;      /* Espaciado entre la tabla y el siguiente elemento */
+  overflow: hidden;       /* Asegura que el contenido se recorte de acuerdo a los bordes redondeados */
+}
+
+.table-container {
+  max-height: 300px;  /* Limita la altura de la tabla */
+  overflow-y: auto;   /* Añade scroll vertical a la tabla */
+  margin-bottom: -20px; /* Espaciado entre la tabla y el siguiente elemento */
+}
+
+/* Estilo de los filtros con más espacio y scroll */
+.filters-container {
+  max-height: 300px; /* Aumenta la altura de los filtros */
+  margin-bottom: -20px; /* Espaciado entre la tabla y el siguiente elemento */
+  overflow-y: auto;  /* Añade scroll vertical a los filtros */
+}
+
+/* Estilo de la cabecera de la tabla */
+.table-header {
+  background-color: #cce5ff;
+  font-weight: bold;
+  text-align: left;
+}
+
+.table-header th {
+  padding: 12px 8px;
+  border-bottom: 2px solid #b8daff;
+  color: #000;
+}
+
+/* Estilo de las filas de la tabla */
+.table-row td {
+  padding: 12px 8px;
+  border-bottom: 2px solid gray;
+  color: #000;
+}
+
+.table-row:nth-child(even) {
+  background-color: #e2f4ff;
+}
+
+.table-row:nth-child(odd) {
+  background-color: #fff;
+}
+
+.table-row:hover {
+  background-color: #d0e3ff;
+}
+
+
+/*****************************************
+ * CONTADORES DE ESTADOS
+ *****************************************/
+
+/* Contenedor de los stat-box dentro del card */
+.stats-container {
+  display: flex;
+  flex-direction: row;          /* Los elementos se organizan en una fila */
+  gap: 10px;                    /* Espaciado entre los items */
+  justify-content: space-around; /* Distribuye los elementos uniformemente */
+  align-items: center;          /* Alinea verticalmente los items */
+  margin: -10px
+}
+
+/* Cada stat-box dentro del card */
+.stat-box {
+  display: flex;
+  flex-direction: column;       /* Asegura que los elementos dentro de cada stat-box estén alineados en columna */
+  align-items: center;          /* Centra el contenido de cada caja */
+  padding: 4px;                 /* Ajuste de padding para mantener el contenido compacto */
+  border: 2px solid #ccc;       /* Borde alrededor de cada stat-box */
+  border-radius: 10px;          /* Bordes redondeados */
+  box-sizing: border-box;       /* Asegura que el padding y el borde no afecten el tamaño total */
+  text-align: center;
+  flex: 1;                      /* Hace que cada stat-box ocupe el espacio disponible */
+}
+
+/* El valor numérico dentro del stat-box */
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+
+/* La etiqueta (label) de cada stat-box */
+.stat-label {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+
+/* El porcentaje debajo de cada valor */
+.stat-percent {
+  font-size: 0.875rem;
+  font-weight: bold;
+  margin-bottom: -5px;
+}
+.card-stats {
+  /* que el alto sea el que necesiten sus contenidos */
+  height: auto !important;
+  padding: 0.8rem;         /* un poco de espacio interior */ 
+  margin-bottom: -8px;
+}
+
+/*****************************************
+ * GRAFICOS
+ *****************************************/
+ .grafico-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  /* 1) Dale un tamaño fijo o relativo */
+  height: 360px;    /* altura deseada */
+  position: relative;
+}
+
+/*****************************************
+ * ESTILOS GENERALES PARA CARD DEL GRAFICO
+ *****************************************/
+.grafico-card {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  overflow: hidden; /* Evita que el contenido se desborde */
+}
+
+/*****************************************
+ * MODAL
+ *****************************************/
+
+.custom-modal {
+  --width: auto;
+  --height: auto;
+  --min-width: unset;
+  --min-height: unset;
+  --max-height: unset;
+  --border-radius: 10px;
+}
+
+.custom-modal .modal-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 8px;
+  background-color: transparent;
+  padding: 4px 8px;
+}
+
+.custom-modal .modal-buttons ion-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  --border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+ion-chip {
+  border-radius: 8px !important;
+  --background: #ececec;
+  --color: #333;
+  font-weight: bold;
+}
+
+/*****************************************
+* SUPERPOSICION DE LICITADORES ESTADISTICAS
+ *****************************************/
+
+/* Keyframes de entrada */
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Keyframes de salida */
+@keyframes fadeOutOverlay {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes scaleOut {
+  from { transform: scale(1);   opacity: 1; }
+  to   { transform: scale(0.8); opacity: 0; }
+}
+
+/* 2) Aplicamos la animación al overlay */
+.full-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding-top: 3.5%; 
+  justify-content: center;
+  overflow: hidden;
+
+  /* Animación de fade-in */
+  animation: fadeInOverlay 0.3s ease-out forwards;
+}
+
+/* 3) Aplicamos el scale-in al contenedor hijo */
+.full-overlay app-licitadores-estadisticas  {
+  width: 80vw;
+  height: 80vh;
+  background: var(--ion-background-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  /* Animación de zoom */
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.full-overlay app-fianzas-estadisticas {
+  width: 80vw;
+  height: 80vh;
+  background: var(--ion-background-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  /* Animación de zoom al entrar */
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+/* 4) Dejamos el scroll interno en el ion-content */
+.full-overlay app-licitadores-estadisticas ion-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.full-overlay app-fianzas-estadisticas ion-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Cuando la bandera isClosing sea true */
+.full-overlay.closing {
+  animation: fadeOutOverlay 0.3s ease-in forwards;
+}
+.full-overlay.closing app-licitadores-estadisticas {
+  animation: scaleOut 0.3s ease-in forwards;
+}
+.full-overlay.closing app-fianzas-estadisticas {
+  animation: scaleOut 0.3s ease-in forwards;
+}
+
+
+/* 1) Contenedor que hace que los botones queden uno al lado del otro */
+.buttons-row {
+  display: flex;
+  justify-content: space-between; /* Alinea los botones a los extremos */
+}
+
+.buttons-row ion-button {
+  flex: 1; /* Haz que cada botón ocupe el mismo espacio */
+  margin: 0 5px; /* Asegúrate de que haya espacio entre ellos */
+}
+
+/* Ajustes en el estilo base del botón */
+
+.boton-derecho {
+  margin-right: 10px !important;
+  --border-radius: 10px !important;
+  display: flex !important;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-secondary);
+  margin-top: 10px !important;
+  justify-content: flex-start !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-transform: none;
+}
+
+
+.boton-izquierdo {
+  margin-left: 10px !important;
+  --border-radius: 10px !important;
+  display: flex !important;
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-secondary);
+  margin-top: 10px !important;
+  justify-content: flex-start !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-transform: none;
+}
+
+/* Ajustes en el contenido del botón */
+ion-button .btn-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-start;
+  margin: 0; /* eliminar margen superior e inferior */
+  margin-right: 10%;
+}
+
+ion-button .btn-contentDerecho {
+  margin-right: 20%;
+}
+
+/* Estilos para la imagen */
+ion-button .btn-content img {
+  width: 60px;
+  height: auto;
+  margin: 0; /* eliminar márgenes alrededor de la imagen */
+}
+
+/* Estilos para el texto */
+ion-button .btn-content span {
+  font-size: 180%;
+  margin-top: 22px;
+  font-weight: 1000;
+}
+
+/* 7) Hover */
+.boton-izquierdo:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.boton-derecho:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}

@@ -1,0 +1,87 @@
+<ion-accordion-group expand="inset">
+  <ion-accordion value="filtros">
+    <ion-item slot="header" >
+      <ion-label>
+        <ion-icon name="search-outline" class="bold-icon"></ion-icon>
+        <strong>BUSQUEDA</strong>
+      </ion-label>
+    </ion-item>
+    <div class="ion-padding" slot="content">
+      <div class="filters-container">
+        <!-- Búsqueda por cliente -->
+        <ion-searchbar 
+          class="rounded-search"
+          placeholder="Buscar por cliente" 
+          [(ngModel)]="busquedaCliente"
+          (ionInput)="onClienteSearch($event)">
+        </ion-searchbar>
+  
+        <!-- Número de Expediente -->
+        <ion-searchbar 
+          class="rounded-search"
+          placeholder="Buscar por expediente" 
+          [(ngModel)]="numExpediente"
+          (ionInput)="onNumExpedienteChange($event)">
+        </ion-searchbar>
+  
+        <!-- Desde Fecha -->
+        <ion-item>
+          <ion-label class="label-name">Desde Fecha</ion-label><br>
+          <ion-chip class="date-chip" (click)="openDesdeModal()">
+            {{ desdeFechaControl ? (desdeFechaControl | date: 'd MMM y') : 'Seleccione una fecha' }}
+          </ion-chip>
+        </ion-item>
+        <ion-modal #desdeModal [keepContentsMounted]="true" class="custom-modal">
+          <ng-template>
+            <ion-datetime
+              presentation="date"
+              displayFormat="d MMM y"
+              [(ngModel)]="desdeFechaControl"
+              (ionChange)="onDateScrollDesdeChange($event)"
+            ></ion-datetime>
+            <div class="modal-buttons">
+              <ion-button expand="block" fill="outline" color="medium" (click)="onCancelDesde()">
+                Cancelar
+              </ion-button>
+              <ion-button expand="block" fill="outline" color="danger" (click)="onResetDesdeFecha()">
+                Reiniciar
+              </ion-button>
+              <ion-button expand="block" fill="outline" color="primary" (click)="onApplyDesdeFecha()">
+                Aplicar
+              </ion-button>
+            </div>
+          </ng-template>
+        </ion-modal>
+  
+        <!-- Hasta Fecha -->
+        <ion-item>
+          <ion-label class="label-name">Hasta Fecha</ion-label><br>
+          <ion-chip class="date-chip" (click)="openHastaModal()">
+            {{ hastaFechaControl ? (hastaFechaControl | date: 'd MMM y') : 'Seleccione una fecha' }}
+          </ion-chip>
+        </ion-item>
+        <ion-modal #hastaModal [keepContentsMounted]="true" class="custom-modal">
+          <ng-template>
+            <ion-datetime
+              presentation="date"
+              displayFormat="d MMM y"
+              [(ngModel)]="hastaFechaControl"
+              (ionChange)="onDateScrollHastaChange($event)"
+            ></ion-datetime>
+            <div class="modal-buttons">
+              <ion-button expand="block" fill="outline" color="medium" (click)="onCancelHasta()">
+                Cancelar
+              </ion-button>
+              <ion-button expand="block" fill="outline" color="danger" (click)="onResetHastaFecha()">
+                Reiniciar
+              </ion-button>
+              <ion-button expand="block" fill="outline" color="primary" (click)="onApplyHastaFecha()">
+                Aplicar
+              </ion-button>
+            </div>
+          </ng-template>
+        </ion-modal>
+      </div>
+    </div>
+  </ion-accordion>
+</ion-accordion-group>

@@ -1,0 +1,36 @@
+.chip-no-action {
+    pointer-events: none;
+    cursor: default;
+    
+    &::part(native) {
+      cursor: default;
+    }
+  }
+    
+.chips-container {
+    display: flex;
+    gap: 5px;
+    scrollbar-width: none; // Oculta scrollbar en Firefox
+      
+    &::-webkit-scrollbar {
+        display: none; // Oculta scrollbar en Chrome/Safari
+    }
+      
+    ion-chip {
+        flex-shrink: 0; // Evita que los chips se encojan
+        margin: 0;
+    }
+}
+  
+  ion-badge {
+    border-radius: 50px !important;
+    margin-left: 5px;
+  }
+
+  // Ajuste para pantallas pequeñas
+@media (max-width: 768px) {      
+    .chips-container ion-chip {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+}

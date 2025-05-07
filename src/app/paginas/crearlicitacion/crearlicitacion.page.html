@@ -1,0 +1,253 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <div class="header-content">
+      <ion-title><strong>Nueva Licitación</strong></ion-title>
+      <div class="chips-container">
+        <!-- Aquí puedes agregar chips o lo que necesites -->
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="custom-content" *ngIf="licitacionForm">
+  <div class="card-container">
+    <ion-card>
+      <img src="assets/imagenes/logo.png" alt="Logo Empresa" class="company-logo" />
+      <ion-grid>
+        <ion-row>
+          <!-- Columna Izquierda: Formulario -->
+          <ion-col size="6" class="form-column">
+            <form [formGroup]="licitacionForm" (ngSubmit)="onSubmit()">
+              <!-- Campo Item (solo lectura) -->
+              <ion-item>
+                <ion-label><strong>Licitación Número {{ licitacionForm.get('item')?.value }}</strong></ion-label>
+              </ion-item>
+              <!-- Cliente -->
+              <ion-item>
+                <ion-label position="stacked">Cliente</ion-label>
+                <ion-input
+                  formControlName="cliente"
+                  type="text"
+                  placeholder="Introduce el cliente"
+                ></ion-input>
+              </ion-item>
+              <!-- Título -->
+              <ion-item>
+                <ion-label position="stacked">Título</ion-label>
+                <ion-input
+                  formControlName="titulo"
+                  type="text"
+                  placeholder="Introduce el título"
+                ></ion-input>
+              </ion-item>
+              <!-- Expediente -->
+              <ion-item>
+                <ion-label position="stacked">Expediente</ion-label>
+                <ion-input
+                  formControlName="numexpediente"
+                  type="text"
+                  placeholder="Introduce el número de expediente"
+                ></ion-input>
+              </ion-item>
+              <!-- Fecha de presentación -->
+              <ion-item>
+                <ion-label position="stacked">Fecha de presentación</ion-label> <br>
+                <ion-datetime-button datetime="date"></ion-datetime-button>
+                <ion-modal [keepContentsMounted]="true" cssClass="custom-modal">
+                  <ng-template>
+                    <ion-datetime id="date" presentation="date" formControlName="fechapresentacion"></ion-datetime>
+                  </ng-template>
+                </ion-modal><br>
+              </ion-item>
+              <!-- Tipo -->
+              <ion-item>
+                <ion-label position="stacked">Tipo</ion-label>
+                <ion-select
+                  formControlName="tipo"
+                  placeholder="Seleccione el tipo"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                >
+                  <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
+                    {{ tipo }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Tipo de Contrato -->
+              <ion-item>
+                <ion-label position="stacked">Tipo de Contrato</ion-label>
+                <ion-select
+                  formControlName="tipocontrato"
+                  placeholder="Seleccione el tipo de contrato"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
+                  <ion-select-option
+                    *ngFor="let tipocontrato of tiposContrato"
+                    [value]="tipocontrato"
+                  >
+                    {{ tipocontrato }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Valor del Contrato -->
+              <ion-item>
+                <ion-label position="stacked">Valor del Contrato</ion-label>
+                <ion-input
+                  formControlName="importe"
+                  type="number"
+                  placeholder="Indique el valor del contrato"
+                ></ion-input>
+              </ion-item>
+              <!-- Captada por -->
+              <ion-item>
+                <ion-label position="stacked">Captada por</ion-label>
+                <ion-select
+                  formControlName="captadapor"
+                  placeholder="Seleccione un empleado"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
+                  <ion-select-option
+                    *ngFor="let persona of personasEmpresa"
+                    [value]="persona"
+                  >
+                    {{ persona }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Estudio por -->
+              <ion-item>
+                <ion-label position="stacked">Estudio por</ion-label>
+                <ion-select
+                  formControlName="estudiopor"
+                  placeholder="Seleccione un empleado"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
+                  <ion-select-option
+                    *ngFor="let persona of personasEmpresa"
+                    [value]="persona"
+                  >
+                    {{ persona }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Presupuesto por -->
+              <ion-item>
+                <ion-label position="stacked">Presupuesto por</ion-label>
+                <ion-select
+                  formControlName="presupuestopor"
+                  placeholder="Seleccione un empleado"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
+                  <ion-select-option
+                    *ngFor="let persona of personasEmpresa"
+                    [value]="persona"
+                  >
+                    {{ persona }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Presentada por -->
+              <ion-item>
+                <ion-label position="stacked">Presentada por</ion-label>
+                <ion-select
+                  formControlName="presentadapor"
+                  placeholder="Seleccione un empleado"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
+                  <ion-select-option
+                    *ngFor="let persona of personasEmpresa"
+                    [value]="persona"
+                  >
+                    {{ persona }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Estado Inicial -->
+              <ion-item>
+                <ion-label position="stacked">Estado Inicial</ion-label>
+                <ion-select 
+                cancelText="Cancelar"
+                okText="Aceptar"
+                formControlName="estadoini"
+                placeholder="Seleccione el estado inicial"
+                interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }">
+                  <ion-select-option
+                    *ngFor="let estado of estadosIniciales"
+                    [value]="estado"
+                  >
+                    {{ estado }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Estado Final -->
+              <ion-item>
+                <ion-label position="stacked">Estado Final</ion-label>
+                <ion-select 
+                formControlName="estadofinal" 
+                cancelText="Cancelar"
+                okText="Aceptar"
+                placeholder="Seleccione el estado final"
+                interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }">
+                  <ion-select-option
+                    *ngFor="let estado of estadosFinales"
+                    [value]="estado"
+                  >
+                    {{ estado }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+              <!-- Ruta Carpeta -->
+              <ion-item>
+                <ion-label position="stacked">Ruta Carpeta</ion-label>
+                <ion-input
+                  formControlName="rutacarpeta"
+                  type="text"
+                  placeholder="Escribe aqui la ruta de la carpeta"
+                ></ion-input>
+              </ion-item>
+              <!-- Observaciones -->
+              <ion-item>
+                <ion-label position="stacked">Observaciones</ion-label>
+                <ion-textarea formControlName="observaciones" placeholder="¡No dudes en dar mas información!"></ion-textarea>
+              </ion-item>
+              <ion-button
+                expand="block"
+                type="submit"
+                [disabled]="licitacionForm.invalid"
+              >
+                Crear Licitación
+              </ion-button>
+            </form>
+          </ion-col>
+
+          <!-- Columna Derecha: Imagen e Instrucciones -->
+          <ion-col size="6" class="ion-text-center">
+            <img src="assets/imagenes/imagenForm.png" alt="Instrucciones" />
+            <h2>¡Vamos a crear tu nueva licitación! Completa los campos y todo estará listo. 😊</h2>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+  </div>
+</ion-content>

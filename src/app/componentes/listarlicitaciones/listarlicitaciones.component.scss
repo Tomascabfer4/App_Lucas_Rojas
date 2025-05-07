@@ -1,0 +1,105 @@
+
+/* Contenedor principal del contenido */
+ion-item-group {
+  flex: 1; /* Ocupa todo el espacio disponible */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around; /* Distribuye grupos de items */
+}
+
+#container {
+  text-align: left;
+  background-color: #6A80B0;
+  padding: 10px; /* Esto ayuda a que el contenido no quede pegado al borde */
+}
+
+ion-item {
+  --border-width: 0 !important;  /* Elimina el borde del ion-item */
+  --inner-border-width: 0 !important;  /* Elimina el borde interno entre los ion-item */
+  --background: transparent; /* Asegura que el fondo sea transparente */
+  margin-bottom: -20px;  /* Reduce la separación entre ion-items (puedes ajustar este valor) */
+}
+
+.label-title {
+  font-size: 17px;  /* Ajusta el tamaño de la fuente para el nombre */
+  margin-left: 3%;
+  font-weight: bold; /* Hacer el nombre más destacado */
+  color: var(--ion-color-secondary);  /* Color primario de Ionic */
+  margin-right: 10px;  /* Un poco de espacio entre el nombre y el valor */
+}
+
+.label-value {
+  font-size: 14px;  /* Ajusta el tamaño de la fuente para el valor */
+  color: #666;  /* Color más tenue para los valores */
+}
+
+ion-item-divider {
+  border-bottom: 3px solid var(--ion-color-primary); /* Cambia el grosor de la línea aquí */
+}
+
+
+#container strong {
+  font-size: 20px;
+  line-height: 26px;
+  color: #333
+}
+
+#container p {
+  font-size: 16px;
+  line-height: 22px;
+  color: #6A80B0;
+  margin: 0;
+}
+
+#container a {
+  text-decoration: none;
+}
+
+ion-card:hover {
+transform: scale(1.03); /* Aumenta el tamaño del card */
+}
+
+  .botones-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;  // Espacio entre botones
+    margin: 16px 0;
+  }
+
+.boton-personalizado {
+  --height: 40px;  // Altura uniforme
+  min-width: 140px; // Ancho mínimo para consistencia
+
+  ion-icon {
+    margin-right: 8px;  // Espacio entre icono y texto
+    font-size: 18px;    // Tamaño del icono
+  }
+
+  span {
+    margin-left: 4px;  // Ajuste fino de espacio texto
+  }
+}
+
+ion-card {
+transition: transform 0.3s ease; /* Transición suave */
+width: 95%;        /* Ocupa todo el ancho del contenedor padre */
+min-height: 880px;  /* Altura mínima fija para uniformidad */
+max-height: 880px;  /* Altura máxima para contenido extenso */
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+}
+
+::ng-deep .custom-modal {
+  --border-radius: 10px !important;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* Alinea el contenido en columna */
+  text-align: center;
+  padding: 20px; /* Opcional: para dar algo de espacio */
+}

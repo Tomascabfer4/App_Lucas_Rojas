@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <div class="header-content">
+      <ion-title><strong>Licitaciones Adjudicadas</strong></ion-title>
+      <div class="chips-container">
+        <ion-chip class="chip-no-action" color="success"
+          >{{ adjudicadas }}</ion-chip
+        >
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <app-filtrarlicitaciones
+    (filtrosChanged)="onFiltrosChanged($event)"
+  ></app-filtrarlicitaciones>
+
+  <app-listarlicitaciones
+    filtroEstado="ADJUDICADA"
+    [busquedaCliente]="busquedaCliente"
+    [numExpediente]="numExpediente"
+    [desdeFecha]="desdeFecha"
+    [hastaFecha]="hastaFecha"
+  ></app-listarlicitaciones>
+</ion-content>

@@ -1,0 +1,140 @@
+ion-content {
+    --background: #6A80B0;
+    /* Fondo original */
+}
+
+/*****************************************
+ * ION-CARD
+ *****************************************/
+
+/* Transición suave en los ion-card */
+ion-card {
+    border-radius: 10px;
+    /* Bordes redondeados */
+    flex-direction: column;
+    /* Hace que el ion-card ocupe todo el espacio disponible */
+    margin-bottom: 1%;
+}
+
+/*****************************************
+ * TABLA
+ *****************************************/
+
+/* Contenedor para scroll interno */
+.table-container {
+    max-height: calc(100% - 56px);
+    /* deja espacio al header */
+}
+
+/* Tabla con bordes redondeados */
+.rounded-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #b8daff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Header azul */
+.table-header {
+    background-color: #cce5ff;
+    font-weight: bold;
+    text-align: left;
+}
+
+.table-header th {
+    padding: 12px 8px;
+    border-bottom: 2px solid #b8daff;
+    color: #000;
+}
+
+/* Filas alternadas */
+.table-row td {
+    padding: 12px 8px;
+    border-bottom: 2px solid gray;
+    color: #000;
+}
+
+.table-row:nth-child(even) {
+    background-color: #e2f4ff;
+}
+
+.table-row:nth-child(odd) {
+    background-color: #fff;
+}
+
+/* Hover sobre fila */
+.table-row:hover {
+    background-color: #d0e3ff;
+}
+
+/* 2) Ajustamos el padding de las celdas para hacerla más delgada */
+.rounded-table tr.year-separator td {
+    padding: 2px 6px;
+    /* Menos alto que las filas normales */
+    border: none;
+    /* Sin bordes laterales ni top */
+    border-bottom: 2.5px solid darkslategray;
+    /* Línea fina debajo */
+    font-weight: bold;
+    font-style: italic;
+    color: #333;
+    /* Ajusta contraste */
+    text-align: left;
+}
+
+/* 3) Para evitar que las reglas de filas alternas la afecten */
+.rounded-table tr.year-separator:nth-child(even),
+.rounded-table tr.year-separator:nth-child(odd) {
+    background: antiquewhite;
+}
+
+/*****************************************
+ * BOTONES
+ *****************************************/
+
+.nombre-cell {
+    /* Aseguramos que no provoque wraps raros */
+    white-space: nowrap;
+}
+
+.nombre-with-action {
+    display: flex;
+    align-items: center;
+    /* verticalmente centrados */
+    gap: 8px;
+    /* separación entre nombre y botón */
+}
+
+/* Opcional: si el nombre es muy largo, truncar con puntos */
+.nombre-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 200px;
+    /* ajusta al ancho que necesites */
+}
+
+.removed-chips-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.removed-chips-header ion-chip {
+    display: flex;
+    align-items: center;
+}
+
+.removed-chips-header .restore-btn {
+    --padding-start: 0;
+    --padding-end: 0;
+}
+
+/* Total de fianzas activas */
+.total-fianzas {
+    font-size: 1.2rem;
+    color: #000;
+    font-weight: bold;
+}

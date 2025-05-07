@@ -1,0 +1,87 @@
+/* Estilos existentes que están bien */
+ion-menu-button {
+  color: var(--ion-color-primary);
+}
+
+ion-content {
+  --background: #6A80B0;
+}
+
+/* --- AJUSTES FINALES DE LAYOUT FLEXBOX --- */
+
+/* Contenedor del título y los chips */
+.header-content {
+  display: flex; /* Convertirlo en contenedor flex */
+  align-items: center; /* Alinear elementos verticalmente al centro */
+  gap: 8px; /* Espacio entre el título y los chips */
+  overflow: hidden; /* Ocultar cualquier contenido que se desborde */
+  flex: 0 0 auto; /* Shorthand para las tres propiedades anteriores */
+  justify-content: flex-start; /* Alinear elementos internos (título y chips) al inicio */
+
+}
+
+/* Estilos para el ion-title específicamente DENTRO de header-content */
+.header-content ion-title {
+  /* Eliminar padding por defecto de ion-title que puede interferir */
+  padding: 0;
+  /* Permitir que el título se encoja por debajo de su tamaño intrínseco si es necesario */
+  min-width: 0;
+  /* Manejo de texto largo: truncar con puntos suspensivos */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Evitar que el texto salte de línea */
+  overflow: hidden; /* Ocultar el texto que se desborda */
+  flex: 0 1 auto; /* Shorthand para las tres propiedades anteriores */
+
+  /* Asegurar que hereda el color de su padre .header-content */
+  color: inherit;
+}
+
+
+/* Contenedor de los chips */
+.chips-container {
+  display: flex; /* Convertirlo en contenedor flex (para el gap interno si hay varios chips) */
+  gap: 5px; /* Espacio entre MÚLTIPLES chips si los hubiera */
+  scrollbar-width: none; /* Oculta scrollbar en Firefox */
+  flex: 0 0 auto; /* Shorthand */
+
+  &::-webkit-scrollbar {
+    display: none; /* Oculta scrollbar en Chrome/Safari */
+  }
+}
+
+/* Chips individuales dentro del contenedor de chips */
+.chips-container ion-chip {
+    flex-shrink: 0; /* Asegurar que los chips individuales no se encojan */
+    margin: 0; /* Eliminar márgenes por defecto */
+}
+
+
+/* Estilo específico para el chip sin acción */
+.chip-no-action {
+  pointer-events: none; /* Deshabilitar interacciones del ratón */
+  cursor: default; /* Mostrar cursor por defecto */
+
+  &::part(native) {
+    cursor: default;
+  }
+}
+
+
+/* Ajuste para pantallas pequeñas (Media Query) */
+@media (max-width: 768px) {
+  .header-content {
+    /* Añadir padding a la izquierda para separar del botón de menú en pantallas pequeñas */
+    padding-left: 8px; /* Ajusta este valor según necesites */
+
+    /* Puedes redefinir el 'gap' si quieres un espacio diferente entre título y chip en móvil */
+    gap: 5px;
+
+    /* Las propiedades flex ya están en el estilo base (flex: 0 0 auto;) */
+    justify-content: flex-start; /* Mantener alineación al inicio */
+    /* color: inherit; */ /* Ya hereda */
+  }
+
+  .header-content ion-title {
+    font-size: 1.1rem; /* Reducir tamaño de fuente en móvil */
+  }
+}

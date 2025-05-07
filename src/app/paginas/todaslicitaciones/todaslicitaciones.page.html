@@ -1,0 +1,29 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <div class="header-content">
+      <ion-title ><strong>Todas Las Licitaciones</strong></ion-title>
+      <app-contarlicitaciones></app-contarlicitaciones>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <app-filtrarlicitaciones
+    (filtrosChanged)="onFiltrosChanged($event)"
+  ></app-filtrarlicitaciones>
+
+  <app-listarlicitaciones
+    [busquedaCliente]="busquedaCliente"
+    [numExpediente]="numExpediente"
+    [desdeFecha]="desdeFecha"
+    [hastaFecha]="hastaFecha"
+  >
+  </app-listarlicitaciones>
+
+  
+</ion-content>

@@ -1,0 +1,89 @@
+/* Estilos existentes que están bien */
+ion-menu-button {
+  color: var(--ion-color-primary);
+}
+
+ion-content {
+  --background: #6A80B0;
+}
+
+
+/* Estilo para el chip sin acción (se mantiene) */
+.chip-no-action {
+  pointer-events: none;
+  cursor: default;
+
+  &::part(native) {
+    cursor: default;
+  }
+}
+
+/* --- AJUSTES PARA .chips-container (ahora es el contenedor flex de título y chip) --- */
+
+.chips-container {
+  display: flex; /* Convertirlo en contenedor flex - Ya estaba bien */
+  align-items: center; /* *** AÑADIR: Alinear elementos verticalmente al centro *** */
+
+  /* Usar 'gap' para poner espacio ENTRE el título y el chip */
+  gap: 8px; /* Ajusta este valor para el espacio deseado */
+
+  scrollbar-width: none; /* Oculta scrollbar en Firefox - Ya estaba bien */
+
+  flex: 0 0 auto; /* Shorthand para las tres propiedades anteriores */
+
+  /* Asegurar que los elementos internos (Título y Chip) se alineen al inicio */
+  justify-content: flex-start; /* *** AÑADIR *** */
+
+
+  &::-webkit-scrollbar {
+    display: none; /* Oculta scrollbar en Chrome/Safari - Ya estaba bien */
+  }
+
+  /* NOTA: Los estilos de ion-chip dentro de .chips-container se manejarán a continuación */
+}
+
+/* --- ESTILOS PARA ion-title DENTRO DE .chips-container --- */
+.chips-container ion-title {
+  /* Eliminar padding por defecto de ion-title que puede interferir */
+  padding: 0;
+  /* Permitir que el título se encoja por debajo de su tamaño intrínseco si es necesario */
+  min-width: 0;
+  /* Manejo de texto largo: truncar con puntos suspensivos */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Evitar que el texto salte de línea */
+  overflow: hidden; /* Ocultar el texto que se desborda */
+
+  flex: 0 1 auto; /* Shorthand */
+}
+
+/* --- ESTILOS PARA ion-chip DENTRO DE .chips-container --- */
+.chips-container ion-chip {
+
+    flex: 0 0 auto; /* Shorthand */
+    margin: 0; /* Aseguramos que no haya margen */
+}
+
+
+/* --- Ajuste para pantallas pequeñas (Media Query) --- */
+/* *** CORREGIR SELECTOR: Apuntar a .chips-container en lugar de .header-content *** */
+@media (max-width: 768px) {
+  .chips-container {
+    /* Añadir padding a la izquierda para separar del botón de menú en pantallas pequeñas */
+    padding-left: 8px; /* Ajusta este valor según necesites */
+
+    /* Redefinir el 'gap' para un espacio diferente entre título y chip en móvil si lo deseas */
+    gap: 5px;
+
+    /* Las propiedades flex (flex: 0 0 auto;) ya están en el estilo base */
+    justify-content: flex-start; /* Mantener alineación al inicio */
+    /* color: inherit; */ /* Ya hereda */
+  }
+
+  /* *** CORREGIR SELECTOR: Apuntar a ion-title dentro de .chips-container *** */
+  .chips-container ion-title {
+    font-size: 1.1rem; /* Reducir tamaño de fuente en móvil */
+
+  }
+
+  /* Los estilos de ion-chip dentro de chips-container ya son responsivos con las reglas anteriores */
+}
