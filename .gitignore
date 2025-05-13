@@ -28,6 +28,7 @@ log.txt
 /tmp
 /out-tsc
 /bazel-out
+/dist_electron
 
 # Node
 /node_modules

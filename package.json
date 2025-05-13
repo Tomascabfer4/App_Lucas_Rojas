@@ -1,7 +1,8 @@
 {
   "name": "App_Lucas_Rojas",
   "version": "0.0.1",
-  "author": "Ionic Framework",
+  "author": "Tomás Cabello Fernández",
+  "main": "electron-main.js",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
@@ -9,7 +10,24 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:ionic": "ionic build",
+    "electron:dev": "electron .",
+    "electron:prod": "electron-builder"
+  },
+  "build": {
+    "appId": "com.lucasrojas.app",
+    "files": [
+      "www/**/*",
+      "electron-main.js"
+    ],
+    "directories": {
+      "output": "dist_electron",
+      "buildResources": "www/assets/icon"
+    },
+    "mac":   { "icon": "icono.icns" },
+    "linux": { "icon": "icono.png" },
+    "win":   { "icon": "icono.ico" }
   },
   "private": true,
   "dependencies": {
@@ -53,6 +71,9 @@
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
+    "electron": "^36.2.0",
+    "electron-builder": "^26.0.12",
+    "electron-reload": "^2.0.0-alpha.1",
     "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsdoc": "^48.2.1",
@@ -66,5 +87,5 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.6.3"
   },
-  "description": "An Ionic project"
+  "description": "Proyecto de Ionic 8 con Angular 19 para la app de Lucas Rojas desarrollada en el proceso de practicas en el I.E.S. Inca Garcilaso"
 }

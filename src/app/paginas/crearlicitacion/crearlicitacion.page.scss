@@ -92,15 +92,50 @@ ion-col {
   color: inherit; /* Asegurar que hereda el color del padre .header-content */
 }
 
-/* --- Ajuste para pantallas pequeñas (Media Query) --- */
-@media (max-width: 768px) {
-  /* Ajustes para el contenedor .header-content en pantallas pequeñas */
-  .header-content {
-    margin-left: 8px; /* Esta línea ya estaba en tu media query original */
+@media (max-width: 767px) {
+  /* 1) El card ocupa todo el alto tras el header y es el que scrolla */
+  ion-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100vh - 56px - 2rem) !important; /* ajusta 56px a la altura real de tu toolbar */
+    width: 95% !important;
+    margin: 2rem auto 1rem !important; 
+    overflow-y: auto !important;   /* el scroll ahora es del card completo */
   }
 
-  /* Ajustes para ion-title dentro de .header-content en pantallas pequeñas */
-  .header-content ion-title {
-    font-size: 1.1rem; /* Mantener el tamaño de fuente reducido en móvil */
+  /* 2) Desenrollamos GRID/ROW para que no limiten a los cols */
+  ion-card ion-grid,
+  ion-card ion-row {
+    display: contents !important;
   }
+
+  /* 3) Cada columna al 100% y orden explícito */
+  ion-card ion-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  /* primero la imagen, segundo el form */
+  ion-card ion-col.ion-text-center { order: 1 !important; }
+  ion-card ion-col.form-column     { order: 2 !important; }
+
+  /* 5) Asegurar imagen full-width */
+  .ion-text-center img {
+    display: block;
+    width: 100% !important;
+    height: auto;
+    margin: 1rem 0 !important;
+  }
+
+  .form-column {
+    max-height: none !important;     /* quitar límite de altura */
+    overflow-y: visible !important;  /* permitir que no cree scroll */
+  }
+
+  ion-content.custom-content {
+    overflow: hidden !important;
+  }
+
 }
+
+

@@ -61,10 +61,7 @@ export class AppComponent implements OnInit {
   logout(): void {
     this.servicioautenticacion.logout()
       .then(() => {
-        // Redirige al usuario a la página de login tras cerrar sesión
-        this.router.navigate(['/login']).then(() => {
-          window.location.reload();
-        });
+        this.router.navigateByUrl('/login', { replaceUrl: true });
       })
       .catch((error) => {
         console.error('Error al cerrar sesión:', error);
