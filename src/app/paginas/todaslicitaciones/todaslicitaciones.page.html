@@ -13,8 +13,8 @@
 
 <ion-content>
   
-  <app-filtrarlicitaciones
-    (filtrosChanged)="onFiltrosChanged($event)"
+   <app-filtrarlicitaciones
+    [initialClienteFilter]="busquedaCliente" (filtrosChanged)="onFiltrosChanged($event)"
   ></app-filtrarlicitaciones>
 
   <app-listarlicitaciones

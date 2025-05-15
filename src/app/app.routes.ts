@@ -36,5 +36,10 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./paginas/login/login.page').then(m => m.LoginPage)
+  },
+  // Atrapa cualquier URL que no coincida con las rutas anteriores y redirige al login.
+  {
+    path: '**',
+    redirectTo: 'login'
   }
 ];

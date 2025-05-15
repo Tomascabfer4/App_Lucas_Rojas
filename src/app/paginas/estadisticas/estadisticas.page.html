@@ -1,9 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-     <ion-menu-button></ion-menu-button>
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title><strong>Estadísticas</strong></ion-title> 
+    <ion-title><strong>Estadísticas</strong></ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,19 +15,13 @@
       <ion-col size="12" sizeMd="8.5">
         <!-- fila de botones -->
         <div class="buttons-row">
-          <ion-button
-            class="boton-izquierdo"
-            (click)="abrirLicitadores()"
-          >
+          <ion-button class="boton-izquierdo" (click)="abrirLicitadores()">
             <div class="btn-content">
-              <img src="assets/imagenes/licitadores.png"  />
+              <img src="assets/imagenes/licitadores.png" />
               <span>Estadísticas de Licitadores</span>
             </div>
           </ion-button>
-          <ion-button
-            class="boton-derecho"
-            (click)="abrirContratos()"
-          >
+          <ion-button class="boton-derecho" (click)="abrirContratos()">
             <div class="btn-content btn-contentDerecho">
               <img src="assets/imagenes/dineroFianza.png" />
               <span>Estadísticas de Fianzas</span>
@@ -70,7 +64,9 @@
       <ion-col size="12" sizeMd="8.5">
         <ion-card>
           <ion-card-header>
-            <ion-card-title> <strong>{{ mostrarTituloListado() }}</strong></ion-card-title>
+            <ion-card-title>
+              <strong>{{ mostrarTituloListado() }}</strong></ion-card-title
+            >
           </ion-card-header>
           <ion-card-content>
             <ion-grid>
@@ -89,7 +85,7 @@
                             <ion-item *ngFor="let p of presentadores">
                               <ion-checkbox
                                 slot="start"
-                                [checked]="presentadoresSeleccionados.includes(p)"
+                                [checked]="servicioEstadisticas.presentadoresSeleccionados.includes(p)"
                                 (ionChange)="togglePresentadador(p, $event)"
                               >
                               </ion-checkbox>
@@ -107,7 +103,7 @@
                             <ion-item *ngFor="let e of estadosFinales">
                               <ion-checkbox
                                 slot="start"
-                                [checked]="estadosFinalesSeleccionados.includes(e)"
+                                [checked]="servicioEstadisticas.estadosFinalesSeleccionados.includes(e)"
                                 (ionChange)="toggleEstadoFinal(e, $event)"
                               >
                               </ion-checkbox>
@@ -122,14 +118,16 @@
                     <ion-item>
                       <ion-label><strong>Desde Fecha</strong></ion-label>
                       <ion-chip (click)="openDesdeModal()">
-                        {{ fechaDesde ? (fechaDesde | date: 'd MMM y') :
+                        {{ servicioEstadisticas.fechaDesde ?
+                        (servicioEstadisticas.fechaDesde | date: 'd MMM y') :
                         'Seleccionar' }}
                       </ion-chip>
                     </ion-item>
                     <ion-item>
                       <ion-label><strong>Hasta Fecha</strong></ion-label>
                       <ion-chip (click)="openHastaModal()">
-                        {{ fechaHasta ? (fechaHasta | date: 'd MMM y') :
+                        {{ servicioEstadisticas.fechaHasta ?
+                        (servicioEstadisticas.fechaHasta | date: 'd MMM y') :
                         'Seleccionar' }}
                       </ion-chip>
                     </ion-item>
@@ -160,12 +158,19 @@
                       <tbody>
                         <tr
                           *ngFor="let lic of licitacionesFiltradas"
-                          class="table-row"
+                          class="table-row clickable-row"
+                          (click)="goToTodasLicitaciones(lic.cliente)"
                         >
-                          <td>{{ lic.presentadapor == null ? '(Nadie)' : lic.presentadapor }}</td>
+                          <td>
+                            {{ lic.presentadapor == null ? '(Nadie)' :
+                            lic.presentadapor }}
+                          </td>
                           <td>{{ lic.cliente }}</td>
                           <td>{{ lic.importe }} €</td>
-                          <td>{{ lic.estadofinal }}</td>
+                          <td>
+                            {{ lic.estadofinal == null ?
+                            'Sin estado final' : lic.estadofinal }}
+                          </td>
                           <td>
                             {{ lic.fechapresentacion | date:'mediumDate' }}
                           </td>
@@ -297,5 +302,4 @@
       (cerrar)="cerrarContratos()"
     ></app-fianzas-estadisticas>
   </div>
-  
 </ion-content>

@@ -1,3 +1,4 @@
+// src/app/servicios/estadisticas.service.ts
 import { Injectable } from '@angular/core';
 import { Firestore, collection, query, orderBy, getDocs } from '@angular/fire/firestore';
 import { Licitacion } from '../interfaces/licitacion';
@@ -7,8 +8,21 @@ import { Licitacion } from '../interfaces/licitacion';
 })
 export class EstadisticasService {
 
+  // =======================================================================
+  // PROPIEDADES PARA EL ESTADO DE LOS FILTROS
+  // >>> AÑADIMOS LAS VARIABLES PARA GUARDAR EL ESTADO DE LOS FILTROS AQUÍ
+  // =======================================================================
+  presentadoresSeleccionados: string[] = [];
+  estadosFinalesSeleccionados: string[] = [];
+  fechaDesde: string = ''; // O null/undefined si prefieres
+  fechaHasta: string = new Date().toISOString(); // Valor por defecto: hoy
+
+
   constructor(private firestore: Firestore) { }
 
+  // =======================================================================
+  // MÉTODO PARA OBTENER DATOS (EXISTENTE)
+  // =======================================================================
   async getTodasLicitaciones(): Promise<Licitacion[]> {
     const ref = collection(this.firestore, 'licitaciones');
     const q = query(ref, orderBy('fechapresentacion', 'desc'));
@@ -22,5 +36,45 @@ export class EstadisticasService {
     });
 
     return licitaciones;
+  }
+
+  // =======================================================================
+  // MÉTODOS PARA GESTIONAR EL ESTADO DE LOS FILTROS
+  // >>> AÑADIMOS LOS MÉTODOS PARA INTERACTUAR CON EL ESTADO DE LOS FILTROS
+  // =======================================================================
+
+  // Método para obtener el estado actual de todos los filtros
+  getFiltros() {
+    return {
+      presentadoresSeleccionados: [...this.presentadoresSeleccionados], // Devolvemos copias
+      estadosFinalesSeleccionados: [...this.estadosFinalesSeleccionados],
+      fechaDesde: this.fechaDesde,
+      fechaHasta: this.fechaHasta
+    };
+  }
+
+  // Métodos para actualizar el estado de los filtros
+  setPresentadoresSeleccionados(presentadores: string[]) {
+    this.presentadoresSeleccionados = presentadores;
+  }
+
+  setEstadosFinalesSeleccionados(estados: string[]) {
+    this.estadosFinalesSeleccionados = estados;
+  }
+
+  setFechaDesde(fecha: string) {
+    this.fechaDesde = fecha;
+  }
+
+  setFechaHasta(fecha: string) {
+    this.fechaHasta = fecha;
+  }
+
+  // Método para resetear todos los filtros a su estado inicial
+  limpiarFiltros() {
+    this.presentadoresSeleccionados = [];
+    this.estadosFinalesSeleccionados = [];
+    this.fechaDesde = '';
+    this.fechaHasta = new Date().toISOString();
   }
 }

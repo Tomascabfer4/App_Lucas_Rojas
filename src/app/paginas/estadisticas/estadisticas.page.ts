@@ -1,3 +1,4 @@
+// src/app/paginas/estadisticas/estadisticas.page.ts
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   IonModal,
@@ -30,11 +31,13 @@ import { FormsModule } from '@angular/forms';
 import { ChartOptions, ChartDataset } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { Licitacion } from 'src/app/interfaces/licitacion';
+import { Router } from '@angular/router';
 import { EstadisticasService } from 'src/app/servicios/estadisticas.service';
 import { ConstantesService } from 'src/app/servicios/constantes.service';
 import { LicitadoresEstadisticasComponent } from 'src/app/componentes/licitadores-estadisticas/licitadores-estadisticas.component';
 import { FianzasEstadisticasComponent } from 'src/app/componentes/fianzas-estadisticas/fianzas-estadisticas.component';
 import { TemaService } from 'src/app/servicios/tema.service';
+
 
 @Component({
   selector: 'app-estadisticas',
@@ -80,17 +83,18 @@ export class EstadisticasPage implements OnInit {
   licitacionesFiltradas: Licitacion[] = []; // Contiene las licitaciones filtradas según los criterios
   totalLicitaciones: number = 0; // Total de licitaciones
 
-  // Filtros: presentadores y estados finales
+  // Filtros: presentadores y estados finales (posibles valores)
   presentadores: string[] = [];
   estadosFinales: string[] = [];
-  presentadoresSeleccionados: string[] = [];
-  estadosFinalesSeleccionados: string[] = [];
+  // >>> ELIMINAMOS estas propiedades, ¡ahora están en el servicio!
+  // presentadoresSeleccionados: string[] = [];
+  // estadosFinalesSeleccionados: string[] = [];
 
-  // Variables para las fechas de filtro
-  fechaDesde: string = '';
-  fechaHasta: string = new Date().toISOString();
+  // Variables para las fechas de filtro (SOLO TEMPORALES PARA LOS MODALES)
+  // >>> Mantenemos estas, ya que son estado temporal del UI del modal
   fechaDesdeTemp: string = '';
   fechaHastaTemp: string = '';
+
   @ViewChild('desdeModal') desdeModal!: IonModal;
   @ViewChild('hastaModal') hastaModal!: IonModal;
 
@@ -101,7 +105,7 @@ export class EstadisticasPage implements OnInit {
   public isClosing = false;
   private CLOSE_ANIM_DURATION = 300; // ms, debe coincidir con tu CSS
 
-  // Para mostrar estadísticas resumidas
+  // Para mostrar estadísticas resumidas (calculadas a partir de licitacionesFiltradas)
   statsResumen: {
     label: string;
     value: number;
@@ -111,7 +115,7 @@ export class EstadisticasPage implements OnInit {
   statsGrafico: { label: string; value: number; color: string }[] = [];
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-  // Propiedades para el gráfico de sectores (pie chart)
+  // Propiedades para el gráfico (se actualizan basadas en licitacionesFiltradas)
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
     plugins: {
@@ -150,10 +154,13 @@ export class EstadisticasPage implements OnInit {
   // =======================================================================
   constructor(
     private servicioTema: TemaService,
-    private servicioEstadisticas: EstadisticasService,
-    private servicioConstantes: ConstantesService
+    // >>> Inyectamos el servicio que ahora maneja datos Y filtros
+    public servicioEstadisticas: EstadisticasService, // Lo hacemos public para usarlo en el template
+    private servicioConstantes: ConstantesService,
+    private router: Router 
   ) {
     addIcons({});
+    // >>> NO necesitas inicializar los filtros aquí, el servicio los inicializa
   }
 
   // Método temporal para encontrar licitaciones con estadofinal nulo
@@ -168,90 +175,125 @@ export class EstadisticasPage implements OnInit {
     console.log('----------------------------------------------------');
   }
 
+
   // =======================================================================
   // MÉTODOS DEL CICLO DE VIDA DE ANGULAR
   // =======================================================================
   // Este método se ejecuta cuando el componente se inicializa
   async ngOnInit() {
     try {
+      // Obtenemos todas las licitaciones (esto sigue siendo responsabilidad del servicio)
       this.licitaciones =
         await this.servicioEstadisticas.getTodasLicitaciones();
-      this.licitacionesFiltradas = [...this.licitaciones];
-      const config = await this.servicioConstantes.getConstantes();
 
+      const config = await this.servicioConstantes.getConstantes();
       this.presentadores = config.PERSONAS_EMPRESA;
       this.estadosFinales = config.ESTADOS_FINALES;
+
       // *** Llama al método de detección aquí ***
       this.detectarLicitacionesConEstadofinalNulo();
       // ****************************************
-      this.filtradoContadoresEstados();
-      this.actualizarGraficoEstados();
+
+      // >>> Aplicamos los filtros que están guardados en el servicio
+      // Esto asegura que al regresar a la página, se aplique el último estado de filtro
+      this.aplicarFiltros();
+
+
     } catch (error) {
       console.error('Error al obtener datos:', error);
+      // Si hay un error, inicializa licitacionesFiltradas a vacío y aplica los filtros (vacíos)
+      this.licitacionesFiltradas = [];
+      this.aplicarFiltros(); // Llama a aplicar filtros incluso con error para resetear gráfico etc.
     }
+
+
     // Para cambiar el tema del gráfico según el tema de la app
     this.servicioTema.isDark$.subscribe(isDark => {
       const newColor = isDark ? '#fff' : '#000';
 
       // 1) MUTAMOS la instancia de Chart directamente y redibujamos
       if (this.chart?.chart) {
-        this.chart.chart.options.plugins!.title!.color    = newColor;
+        this.chart.chart.options.plugins!.title!.color    = newColor;
         this.chart.chart.options.plugins!.subtitle!.color = newColor;
         this.chart.chart.update();
       }
 
       // 2) REASIGNAMOS pieChartOptions (inmutabilidad) para Angular
+      // Aunque mutamos arriba, reasignar Options aquí asegura que Angular lo detecte
       this.pieChartOptions = {
         ...this.pieChartOptions,
         plugins: {
           ...this.pieChartOptions.plugins!,
-          title:    { ...this.pieChartOptions.plugins!.title!,    color: newColor },
+          title:    { ...this.pieChartOptions.plugins!.title!,    color: newColor },
           subtitle: { ...this.pieChartOptions.plugins!.subtitle!, color: newColor },
         }
       };
     });
   }
 
+
   // =======================================================================
-  // MÉTODOS DE FILTROS
+  // MÉTODOS DE FILTROS (Interactúan con el servicio EstadisticasService)
   // =======================================================================
   // Método que maneja la selección de "Presentado Por" en los filtros
   togglePresentadador(valor: string, event: any) {
+    // >>> Obtenemos la lista actual desde el servicio
+    const currentSelections = [...this.servicioEstadisticas.presentadoresSeleccionados];
     if (event.detail.checked) {
-      this.presentadoresSeleccionados.push(valor); // Si se selecciona, se agrega al array de seleccionados
+      if (!currentSelections.includes(valor)) {
+         currentSelections.push(valor); // Si se selecciona y no está, se agrega
+      }
     } else {
-      this.presentadoresSeleccionados = this.presentadoresSeleccionados.filter(
-        (p) => p !== valor
-      ); // Si no se selecciona, se elimina
+      const index = currentSelections.indexOf(valor);
+      if (index > -1) {
+        currentSelections.splice(index, 1); // Si no se selecciona y está, se elimina
+      }
     }
-    this.aplicarFiltros(); // Vuelve a aplicar los filtros después de hacer un cambio
+    // >>> Actualizamos el estado en el servicio
+    this.servicioEstadisticas.setPresentadoresSeleccionados(currentSelections);
+    this.aplicarFiltros(); // Volvemos a aplicar los filtros después de hacer un cambio
   }
+
 
   // Método para manejar la selección de "Estado Final"
   toggleEstadoFinal(valor: string, event: any) {
+     // >>> Obtenemos la lista actual desde el servicio
+    const currentSelections = [...this.servicioEstadisticas.estadosFinalesSeleccionados];
     if (event.detail.checked) {
-      this.estadosFinalesSeleccionados.push(valor); // Si se selecciona, se agrega
+       if (!currentSelections.includes(valor)) {
+          currentSelections.push(valor); // Si se selecciona y no está, se agrega
+       }
     } else {
-      this.estadosFinalesSeleccionados =
-        this.estadosFinalesSeleccionados.filter((e) => e !== valor); // Si no se selecciona, se elimina
+      const index = currentSelections.indexOf(valor);
+      if (index > -1) {
+         currentSelections.splice(index, 1); // Si no se selecciona y está, se elimina
+      }
     }
+    // >>> Actualizamos el estado en el servicio
+    this.servicioEstadisticas.setEstadosFinalesSeleccionados(currentSelections);
     this.aplicarFiltros(); // Reaplica los filtros
   }
 
-  // Método que aplica los filtros seleccionados
+
+  // Método que aplica los filtros seleccionados (Lee del servicio)
   public aplicarFiltros() {
+    // >>> Leemos el estado de los filtros directamente desde el servicio
+    const { presentadoresSeleccionados, estadosFinalesSeleccionados, fechaDesde, fechaHasta } = this.servicioEstadisticas.getFiltros();
+
+    // El filtrado se realiza sobre la lista completa de licitaciones
     this.licitacionesFiltradas = this.licitaciones.filter((lic) => {
       let coincide = true;
-      if (this.presentadoresSeleccionados.length > 0) {
-        const buscarNulos = this.presentadoresSeleccionados.includes('(Nadie)');
+
+      // >>> Usamos los valores obtenidos del servicio para los filtros
+      if (presentadoresSeleccionados.length > 0) {
+        const buscarNulos = presentadoresSeleccionados.includes('(Nadie)');
         const otrosPresentadoresSeleccionados =
-          this.presentadoresSeleccionados.filter((p) => p !== '(Nadie)');
+          presentadoresSeleccionados.filter((p) => p !== '(Nadie)');
 
         let cumpleFiltroPresentador = false;
 
         // Condición 1: Si "(Nadie)" está seleccionado Y lic.presentadapor es null
         if (buscarNulos && lic.presentadapor == null) {
-          // Usamos == null para cubrir null y undefined
           cumpleFiltroPresentador = true;
         }
 
@@ -263,26 +305,28 @@ export class EstadisticasPage implements OnInit {
           cumpleFiltroPresentador = true;
         }
 
-        // La licitación coincide con el filtro de presentador si cumple alguna de las condiciones
         coincide = coincide && cumpleFiltroPresentador;
       }
-      // Filtro de "Estado Final" (este se mantiene igual)
-      if (this.estadosFinalesSeleccionados.length > 0) {
+
+      // >>> Usamos los valores obtenidos del servicio para los filtros
+      if (estadosFinalesSeleccionados.length > 0) {
         coincide =
           coincide &&
-          this.estadosFinalesSeleccionados.includes(lic.estadofinal);
+          estadosFinalesSeleccionados.includes(lic.estadofinal);
       }
 
-      // Filtro de fechas (este se mantiene igual)
+      // >>> Usamos los valores obtenidos del servicio para los filtros de fecha
       const fechaLic = new Date(lic.fechapresentacion);
-      if (this.fechaDesde) {
-        const desde = new Date(this.fechaDesde);
+      if (fechaDesde) {
+        const desde = new Date(fechaDesde);
         if (fechaLic < desde) {
           coincide = false;
         }
       }
-      if (this.fechaHasta) {
-        const hasta = new Date(this.fechaHasta);
+      if (fechaHasta) {
+        const hasta = new Date(fechaHasta);
+         // Ajuste para incluir el día "hasta" completo
+        hasta.setHours(23, 59, 59, 999);
         if (fechaLic > hasta) {
           coincide = false;
         }
@@ -297,11 +341,12 @@ export class EstadisticasPage implements OnInit {
   }
 
   // =======================================================================
-  // MÉTODOS PARA ESTADÍSTICAS Y GRÁFICOS
+  // MÉTODOS PARA ESTADÍSTICAS Y GRÁFICOS (Estos leen de licitacionesFiltradas)
+  // ... Estos métodos NO necesitan cambios, ya que operan sobre licitacionesFiltradas
+  // que ya ha sido actualizada por aplicarFiltros()
   // =======================================================================
-  // Este método recalcula los contadores para mostrar en la interfaz
-  filtradoContadoresEstados(): void {
-    const total = this.licitacionesFiltradas.length;
+   filtradoContadoresEstados(): void {
+     const total = this.licitacionesFiltradas.length;
     const totalSafe = total || 1; // Para evitar división por cero
 
     const presentadas = this.licitacionesFiltradas.filter(
@@ -323,7 +368,6 @@ export class EstadisticasPage implements OnInit {
       (lic) => lic.estadofinal === 'DESESTIMADA'
     ).length;
 
-    // Resumen de estadísticas con valores y colores para el gráfico
     this.statsResumen = [
       {
         label: 'Presentadas',
@@ -364,14 +408,9 @@ export class EstadisticasPage implements OnInit {
     ];
   }
 
-  /**
-   * Calcula valores, porcentajes y colores para los 6 estados finales
-   * y actualiza pieChartLabels & pieChartDatasets de golpe.
-   */
   actualizarGraficoEstados(): void {
-    // 1. Total y defensa contra división por 0
-    const total = this.licitacionesFiltradas.length;
-    // 2. Cuenta cada estado (asegúrate de usar el texto exacto)
+     const total = this.licitacionesFiltradas.length;
+
     const enResolucion = this.licitacionesFiltradas.filter(
       (l) => l.estadofinal === 'EN ESPERA RESOLUCIÓN'
     ).length;
@@ -391,7 +430,6 @@ export class EstadisticasPage implements OnInit {
       (l) => l.estadofinal === 'DESIERTA'
     ).length;
 
-    // 3. Construye el resumen con label, value, color y percent
     this.statsGrafico = [
       {
         label: 'En Resolución',
@@ -425,7 +463,6 @@ export class EstadisticasPage implements OnInit {
       },
     ];
 
-    // 4. Monta labels y dataset con data y colores
     this.pieChartLabels = this.statsGrafico.map((s) => s.label);
     this.pieChartDatasets = [
       {
@@ -434,71 +471,83 @@ export class EstadisticasPage implements OnInit {
       },
     ];
 
-    this.totalLicitaciones = total; // Actualiza el total de licitaciones
+    this.totalLicitaciones = total;
     if (this.pieChartOptions.plugins && this.pieChartOptions.plugins.subtitle) {
-      this.pieChartOptions.plugins.subtitle.text = 'TOTAL: ' + total; // Actualiza dinámicamente el subtítulo
+      this.pieChartOptions.plugins.subtitle.text = 'TOTAL: ' + total;
     }
   }
 
   // =======================================================================
-  // MÉTODOS DE MODALES PARA FECHAS
+  // MÉTODOS DE MODALES PARA FECHAS (Interactúan con el servicio)
   // =======================================================================
   // Métodos para abrir y cerrar los modales de rango de fechas
   openDesdeModal() {
-    this.fechaDesdeTemp = this.fechaDesde;
+    // >>> Inicializamos la variable temporal del modal con el valor del servicio
+    this.fechaDesdeTemp = this.servicioEstadisticas.fechaDesde;
     this.desdeModal.present();
   }
   cancelDesdeModal() {
     this.desdeModal.dismiss();
   }
   resetDesdeFecha() {
-    this.fechaDesdeTemp = '';
+    this.fechaDesdeTemp = ''; // Resetea solo la variable temporal del modal
   }
   applyDesdeModal() {
-    this.fechaDesde = this.fechaDesdeTemp;
+    // >>> Actualizamos el valor en el servicio
+    this.servicioEstadisticas.setFechaDesde(this.fechaDesdeTemp);
     this.desdeModal.dismiss();
     this.aplicarFiltros(); // Aplica los filtros después de cambiar la fecha
   }
 
+
   // Métodos para el modal de "Hasta Fecha"
   openHastaModal() {
-    this.fechaHastaTemp = this.fechaHasta;
+    // >>> Inicializamos la variable temporal del modal con el valor del servicio
+    this.fechaHastaTemp = this.servicioEstadisticas.fechaHasta;
     this.hastaModal.present();
   }
   cancelHastaModal() {
     this.hastaModal.dismiss();
   }
   resetHastaFecha() {
-    this.fechaHastaTemp = '';
+     this.fechaHastaTemp = new Date().toISOString(); // Resetea solo la variable temporal del modal (al día de hoy)
   }
   applyHastaModal() {
-    this.fechaHasta = this.fechaHastaTemp;
+    // >>> Actualizamos el valor en el servicio
+    this.servicioEstadisticas.setFechaHasta(this.fechaHastaTemp);
     this.hastaModal.dismiss();
     this.aplicarFiltros();
   }
 
-  // =======================================================================
-  // MÉTODO PARA LIMPIAR LOS FILTROS
-  // =======================================================================
-  // Método para limpiar todos los filtros aplicados y mostrar todas las licitaciones
-  limpiarBusqueda() {
-    this.presentadoresSeleccionados = [];
-    this.estadosFinalesSeleccionados = [];
-    this.fechaDesde = '';
-    this.fechaHasta = new Date().toISOString(); // Establece la fecha hasta al día actual
-    this.licitacionesFiltradas = [...this.licitaciones]; // Muestra todas las licitaciones nuevamente
-    this.filtradoContadoresEstados(); // Recalcula los contadores y gráfico
-    this.actualizarGraficoEstados(); // Actualiza el gráfico
-  }
 
   // =======================================================================
-  // MÉTODO PARA MOSTRAR EL TÍTULO DE LA LISTA
+  // MÉTODO PARA LIMPIAR LOS FILTROS (Interactúa con el servicio)
+  // =======================================================================
+  limpiarBusqueda() {
+    // >>> Llamamos al método del servicio para resetear los filtros
+    this.servicioEstadisticas.limpiarFiltros();
+    // Opcional: Actualizamos las variables temporales del modal si es necesario visualmente
+    const filtrosReseteados = this.servicioEstadisticas.getFiltros();
+    this.fechaDesdeTemp = filtrosReseteados.fechaDesde;
+    this.fechaHastaTemp = filtrosReseteados.fechaHasta;
+
+    // Re-aplicamos los filtros (que ahora están reseteados en el servicio)
+    this.aplicarFiltros();
+  }
+
+
+  // =======================================================================
+  // MÉTODO PARA MOSTRAR EL TÍTULO DE LA LISTA (Lee del servicio)
   // =======================================================================
   // Este método muestra un título dinámico dependiendo de los filtros y las fechas seleccionadas
   mostrarTituloListado(): string {
-    if (this.fechaDesde && this.fechaHasta) {
-      const fd = new Date(this.fechaDesde);
-      const fh = new Date(this.fechaHasta);
+     // >>> Leemos las fechas desde el servicio
+    const fechaDesde = this.servicioEstadisticas.fechaDesde;
+    const fechaHasta = this.servicioEstadisticas.fechaHasta;
+
+    if (fechaDesde && fechaHasta) {
+      const fd = new Date(fechaDesde);
+      const fh = new Date(fechaHasta);
       const today = new Date();
 
       const mismodia = (d1: Date, d2: Date): boolean =>
@@ -540,9 +589,10 @@ export class EstadisticasPage implements OnInit {
 
   // =======================================================================
   // GESTIÓN DE LA SUPERPOSICION DE LICITADORES
+  // ... Estos métodos no necesitan cambios, ya que usan this.licitacionesFiltradas
+  // que es un estado local del componente (una copia de los datos filtrados)
   // =======================================================================
-
-  /** Abre el overlay */
+    /** Abre el overlay */
   abrirLicitadores() {
     this.verLicitadoresSuperposicion = true;
     this.isClosing = false;
@@ -557,8 +607,10 @@ export class EstadisticasPage implements OnInit {
     }, this.CLOSE_ANIM_DURATION);
   }
 
+
   // =======================================================================
   // GESTIÓN DE LA SUPERPOSICION DE CONTRATOS
+  // ... Estos métodos no necesitan cambios
   // =======================================================================
 
   /** Abre el overlay */
@@ -574,4 +626,13 @@ export class EstadisticasPage implements OnInit {
       this.isClosing = false;
     }, this.CLOSE_ANIM_DURATION);
   }
+
+   // >>> NUEVO MÉTODO para navegar a TodaslicitacionesPage con filtro de cliente
+  goToTodasLicitaciones(clientName: string) {
+    // Navegamos a la ruta de todaslicitaciones y pasamos el cliente como query parameter
+    this.router.navigate(['/paginas/todaslicitaciones'], {
+      queryParams: { cliente: clientName }
+    });
+  }
+
 }
