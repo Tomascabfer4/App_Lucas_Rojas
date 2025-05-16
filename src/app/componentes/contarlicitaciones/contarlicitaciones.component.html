@@ -1,23 +1,58 @@
 <div class="chips-container">
-  <ion-chip class="chip-no-action" color="primary">TOTALES
+  <ion-chip color="primary" (click)="selectState('todas')">
+    TOTALES
     <ion-badge color="primary">{{ total }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'todas'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="secondary">EN ESTUDIO
+  <ion-chip color="secondary" (click)="selectState('EN ESTUDIO')">
+    EN ESTUDIO
     <ion-badge color="secondary">{{ enEstudio }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'EN ESTUDIO'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="tertiary">PRESENTADAS
+  <ion-chip color="tertiary" (click)="selectState('PRESENTADAS')">
+    PRESENTADAS
     <ion-badge color="tertiary">{{ presentadas }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'PRESENTADAS'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="success">ADJUDICADAS
+  <ion-chip color="success" (click)="selectState('ADJUDICADAS')">
+    ADJUDICADAS
     <ion-badge color="success">{{ adjudicadas }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'ADJUDICADAS'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="danger">NO ADJUDICADAS
+  <ion-chip color="danger" (click)="selectState('NO ADJUDICADAS')">
+    NO ADJUDICADAS
     <ion-badge color="danger">{{ noAdjudicadas }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'NO ADJUDICADAS'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="warning">EN RESOLUCIÓN
+  <ion-chip color="warning" (click)="selectState('EN RESOLUCION')">
+    EN RESOLUCIÓN
     <ion-badge color="warning">{{ enResolucion }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'EN RESOLUCION'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
-  <ion-chip class="chip-no-action" color="dark">DESESTIMADAS
+  <ion-chip color="dark" (click)="selectState('DESESTIMADAS')">
+    DESESTIMADAS
     <ion-badge color="dark">{{ desestimadas }}</ion-badge>
+    <ion-icon
+      *ngIf="activeFilterState === 'DESESTIMADAS'"
+      name="checkmark-circle-outline"
+    ></ion-icon>
   </ion-chip>
 </div>

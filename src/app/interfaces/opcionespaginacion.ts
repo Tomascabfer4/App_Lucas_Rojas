@@ -13,4 +13,5 @@ export interface Opcionespaginacion {
   hastaFecha?: string;
   adjudicadas?: boolean; 
   presentadapor?: string;
+  filterState?: string;
 }

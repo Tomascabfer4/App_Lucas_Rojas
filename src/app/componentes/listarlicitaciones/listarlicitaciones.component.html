@@ -1,164 +1,213 @@
-  <div id="container">
-    <ion-row>  
-      <ion-col size="6" *ngFor="let licitacion of licitaciones; let i = index">
-        <ion-card>
-          <ion-item-group>
-            <ion-item-divider>
-              <ion-label><strong>Detalles del Cliente</strong></ion-label>
-            </ion-item-divider>
-            
-            <ion-item>
-              <ion-label class="label-title">Cliente:</ion-label>
-              <ion-label class="label-value">{{licitacion.cliente}}</ion-label>
-            </ion-item>
-            
-            <ion-item>
-              <ion-label class="label-title">Número de Expediente:</ion-label>
-              <ion-label class="label-value">{{licitacion.numexpediente}}</ion-label>
-            </ion-item>
-            
-            <ion-item>
-              <ion-label class="label-title">Título:</ion-label>
-              <ion-label class="label-value">{{licitacion.titulo}}</ion-label>
-            </ion-item>
-            
-            <ion-item>
-              <ion-label class="label-title">Fecha de Presentación:</ion-label>
-              <ion-label class="label-value">{{ licitacion.fechapresentacion | date:'dd/MM/yyyy' }}</ion-label>
-            </ion-item>            
+<div id="container">
+  <ion-row>
+    <ion-col size="6" *ngFor="let licitacion of licitaciones; let i = index">
+      <ion-card>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label><strong>Detalles del Cliente</strong></ion-label>
+          </ion-item-divider>
 
-          </ion-item-group>
+          <ion-item>
+            <ion-label class="label-title">Cliente:</ion-label>
+            <ion-label class="label-value">{{ licitacion.cliente }}</ion-label>
+          </ion-item>
 
-          <ion-item-group>
-            <ion-item-divider>
-              <ion-label><strong>Información del Contrato</strong></ion-label>
-            </ion-item-divider>
-            
-            <ion-item>
-              <ion-label class="label-title">Tipo:</ion-label>
-              <ion-label class="label-value">{{licitacion.tipo}}</ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Número de Expediente:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.numexpediente
+            }}</ion-label>
+          </ion-item>
 
-            <ion-item>
-              <ion-label class="label-title">Tipo de Contrato:</ion-label>
-              <ion-label class="label-value">{{licitacion.tipocontrato}}</ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Título:</ion-label>
+            <ion-label class="label-value">{{ licitacion.titulo }}</ion-label>
+          </ion-item>
 
-            <ion-item>
-              <ion-label class="label-title">Importe:</ion-label>
-              <ion-label class="label-value">{{licitacion.importe}} €</ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Fecha de Presentación:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.fechapresentacion | date : "dd/MM/yyyy"
+            }}</ion-label>
+          </ion-item>
+        </ion-item-group>
 
-          </ion-item-group>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label><strong>Información del Contrato</strong></ion-label>
+          </ion-item-divider>
 
-          <ion-item-group>
-            <ion-item-divider>
-              <ion-label><strong>Responsables</strong></ion-label>
-            </ion-item-divider>
-          
-            <ion-item>
-              <ion-label class="label-title">Captada Por:</ion-label>
-              <ion-label class="label-value">{{ licitacion.captadapor == null ? '(Nadie)' : licitacion.captadapor }}</ion-label>
-            </ion-item>
-          
-            <ion-item>
-              <ion-label class="label-title">Estudiada Por:</ion-label>
-              <ion-label class="label-value">{{ licitacion.estudiopor == null ? '(Nadie)' : licitacion.estudiopor }}</ion-label>
-            </ion-item>
-          
-            <ion-item>
-              <ion-label class="label-title">Presentada Por:</ion-label>
-              <ion-label class="label-value">{{ licitacion.presentadapor == null ? '(Nadie)' : licitacion.presentadapor }}</ion-label>
-            </ion-item>
-          
-            <ion-item>
-              <ion-label class="label-title">Presupuestada Por:</ion-label>
-              <ion-label class="label-value">{{ licitacion.presupuestopor == null ? '(Nadie)' : licitacion.presupuestopor }}</ion-label>
-            </ion-item>
-          
-            <ion-item>
-              <ion-label class="label-title">Responsable:</ion-label>
-              <ion-label class="label-value">{{ licitacion.responsable == null ? '(Nadie)' : licitacion.responsable }}</ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Tipo:</ion-label>
+            <ion-label class="label-value">{{ licitacion.tipo }}</ion-label>
+          </ion-item>
 
-            <ion-item>
-              <ion-label class="label-title">Eventos:</ion-label>
-              <ion-label class="label-value">{{licitacion.eventos == null ? '(No Tiene)' : licitacion.eventos }}</ion-label>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Tipo de Contrato:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.tipocontrato
+            }}</ion-label>
+          </ion-item>
 
-          </ion-item-group>
+          <ion-item>
+            <ion-label class="label-title">Importe:</ion-label>
+            <ion-label class="label-value"
+              >{{ licitacion.importe }} €</ion-label
+            >
+          </ion-item>
+        </ion-item-group>
 
-          <ion-item-group>
-            <ion-item-divider>
-              <ion-label><strong>Estado y Archivos</strong></ion-label>
-            </ion-item-divider>
-            
-            <ion-item>
-              <ion-label class="label-title">Estado Inicial:</ion-label>
-              <ion-select
-                class="label-value"
-                aria-label="Estado Inicial"
-                interface="popover"
-                [(ngModel)]="licitacion.estadoini"
-                (ionChange)="cambiarEstado(licitacion, 'estadoini', licitacion.estadoini)">
-                <ion-select-option *ngFor="let estadoInicial of estadosIniciales" [value]="estadoInicial">
-                  {{ estadoInicial }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label><strong>Responsables</strong></ion-label>
+          </ion-item-divider>
 
-            <ion-item>
-              <ion-label class="label-title">Estado Final:</ion-label>
-              <ion-select 
-                class="label-value"
-                aria-label="Estado Final"
-                interface="popover"
-                [(ngModel)]="licitacion.estadofinal"
-                (ionChange)="cambiarEstado(licitacion, 'estadofinal', licitacion.estadofinal)">
-                <ion-select-option *ngFor="let estadoFinal of estadosFinales" [value]="estadoFinal">
-                  {{ estadoFinal }} 
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
+          <ion-item>
+            <ion-label class="label-title">Captada Por:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.captadapor == null ? "(Nadie)" : licitacion.captadapor
+            }}</ion-label>
+          </ion-item>
 
-            <div class="botones-container">
-              <ion-button class="boton-personalizado" shape="round" color="primary">
-                <ion-icon slot="start" name="folder-open-sharp"></ion-icon>
-                Ver Carpeta
-              </ion-button>
-            
-              <!--Aqui se llama al componente editarlicitacion y se abre un modal para asi la modificación-->
-              <ion-button 
-                class="boton-personalizado" 
-                shape="round" 
-                color="warning" 
-                (click)="abrirModalEdicion(licitacion)">
-  
-                <ion-icon slot="start" name="create-sharp"></ion-icon>
-                Modificar
-              </ion-button>
-            
-              <ion-button class="boton-personalizado" shape="round" color="danger" 
-                (click)="eliminarLicitacion(licitacion.firebaseId)">
-                <ion-icon slot="start" name="trash-bin-sharp"></ion-icon>
-                Eliminar
-              </ion-button>
-            </div>
+          <ion-item>
+            <ion-label class="label-title">Estudiada Por:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.estudiopor == null ? "(Nadie)" : licitacion.estudiopor
+            }}</ion-label>
+          </ion-item>
 
-          </ion-item-group>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </div>
+          <ion-item>
+            <ion-label class="label-title">Presentada Por:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.presentadapor == null
+                ? "(Nadie)"
+                : licitacion.presentadapor
+            }}</ion-label>
+          </ion-item>
 
-  <ion-infinite-scroll [disabled]="noMoreData" (ionInfinite)="cargarLicitaciones($event)" threshold="100px">
-    <ion-infinite-scroll-content/>
-  </ion-infinite-scroll>
-  <div *ngIf="isLoading" class="loading-container">
-    <ion-spinner color="light"></ion-spinner><br>
-    <ion-label color="light"><strong>Cargando licitaciones...</strong></ion-label>
-  </div>
-  
-  <div *ngIf="noMoreData" class="loading-container">
-    <ion-label color="light"><strong>No hay más licitaciones que mostrar</strong></ion-label>
-  </div>
+          <ion-item>
+            <ion-label class="label-title">Presupuestada Por:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.presupuestopor == null
+                ? "(Nadie)"
+                : licitacion.presupuestopor
+            }}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label class="label-title">Responsable:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.responsable == null
+                ? "(Nadie)"
+                : licitacion.responsable
+            }}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label class="label-title">Eventos:</ion-label>
+            <ion-label class="label-value">{{
+              licitacion.eventos == null ? "(No Tiene)" : licitacion.eventos
+            }}</ion-label>
+          </ion-item>
+        </ion-item-group>
+
+        <ion-item-group>
+          <ion-item-divider>
+            <ion-label><strong>Estado y Archivos</strong></ion-label>
+          </ion-item-divider>
+
+          <ion-item>
+            <ion-label class="label-title">Estado Inicial:</ion-label>
+            <ion-select
+              class="label-value"
+              aria-label="Estado Inicial"
+              interface="popover"
+              [(ngModel)]="licitacion.estadoini"
+              (ionChange)="
+                cambiarEstado(licitacion, 'estadoini', licitacion.estadoini)
+              "
+            >
+              <ion-select-option
+                *ngFor="let estadoInicial of estadosIniciales"
+                [value]="estadoInicial"
+              >
+                {{ estadoInicial }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label class="label-title">Estado Final:</ion-label>
+            <ion-select
+              class="label-value"
+              aria-label="Estado Final"
+              interface="popover"
+              [(ngModel)]="licitacion.estadofinal"
+              (ionChange)="
+                cambiarEstado(licitacion, 'estadofinal', licitacion.estadofinal)
+              "
+            >
+              <ion-select-option
+                *ngFor="let estadoFinal of estadosFinales"
+                [value]="estadoFinal"
+              >
+                {{ estadoFinal }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <div class="botones-container">
+            <ion-button
+              class="boton-personalizado"
+              shape="round"
+              color="primary"
+              (click)="openFolder(licitacion.rutacarpeta)"
+            >
+              <ion-icon slot="start" name="folder-open-sharp"></ion-icon>
+              Ver Carpeta
+            </ion-button>
+
+            <!--Aqui se llama al componente editarlicitacion y se abre un modal para asi la modificación-->
+            <ion-button
+              class="boton-personalizado"
+              shape="round"
+              color="warning"
+              (click)="abrirModalEdicion(licitacion)"
+            >
+              <ion-icon slot="start" name="create-sharp"></ion-icon>
+              Modificar
+            </ion-button>
+
+            <ion-button
+              class="boton-personalizado"
+              shape="round"
+              color="danger"
+              (click)="eliminarLicitacion(licitacion.firebaseId)"
+            >
+              <ion-icon slot="start" name="trash-bin-sharp"></ion-icon>
+              Eliminar
+            </ion-button>
+          </div>
+        </ion-item-group>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</div>
+
+<ion-infinite-scroll
+  [disabled]="noMoreData"
+  (ionInfinite)="cargarLicitaciones($event)"
+  threshold="100px"
+>
+  <ion-infinite-scroll-content />
+</ion-infinite-scroll>
+<div *ngIf="isLoading" class="loading-container">
+  <ion-spinner color="light"></ion-spinner><br />
+  <ion-label color="light"><strong>Cargando licitaciones...</strong></ion-label>
+</div>
+
+<div *ngIf="noMoreData" class="loading-container">
+  <ion-label color="light"
+    ><strong>No hay más licitaciones que mostrar</strong></ion-label
+  >
+</div>

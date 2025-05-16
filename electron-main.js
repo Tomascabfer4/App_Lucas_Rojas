@@ -1,7 +1,8 @@
 // electron-main.js
 
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // Sólo en entorno de desarrollo, cargamos electron-reload
 if (!app.isPackaged) {
@@ -18,6 +19,25 @@ function createWindow() {
     ? path.join(process.resourcesPath, 'assets', 'icon', 'icono.ico')
     : path.join(__dirname, 'www', 'assets', 'icon', 'icono.ico');  
 
+    // >>> Depuración de la ruta del preload script <<<
+  // app.getAppPath() apunta a la raíz del directorio de la aplicación empaquetada.
+  // path.join() construye la ruta completa al archivo 'preload.js' dentro de ese directorio.
+  const preloadScriptPath = path.join(app.getAppPath(), 'preload.js');
+
+  console.log(`[Main Process] app.getAppPath(): ${app.getAppPath()}`); // Log de la raíz de la app empaquetada
+  console.log(`[Main Process] Ruta calculada para preload.js: ${preloadScriptPath}`); // Log de la ruta completa calculada
+
+  // Verificar si el archivo preload.js existe en la ruta calculada en tiempo de ejecución
+  if (fs.existsSync(preloadScriptPath)) {
+    console.log(`[Main Process] preload.js encontrado en: ${preloadScriptPath}`);
+  } else {
+    console.error(`[Main Process] ERROR: preload.js NO encontrado en la ruta calculada: ${preloadScriptPath}`);
+    // Este log es CRÍTICO. Si aparece en producción, el archivo no está donde se espera.
+    // Considera mostrar un error al usuario o salir de la aplicación si el preload script es crítico
+  }
+  // >>> Fin Depuración <<<
+
+
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
@@ -25,6 +45,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: preloadScriptPath
       // opcional: deshabilita por completo DevTools
       // devTools: false
     }
@@ -46,3 +67,19 @@ function createWindow() {
 
 app.whenReady().then(createWindow);
 app.on('window-all-closed', () => app.quit());
+
+// >>> MANEJADOR IPC PARA ABRIR CARPETA <<<
+// Este escucha el evento 'open-folder' enviado desde el renderer
+ipcMain.on('open-folder', async (event, folderPath) => {
+  try {
+    const success = await shell.openPath(folderPath);
+    // shell.openPath devuelve una cadena vacía si tiene éxito, o un mensaje de error si falla
+    if (success === '') {
+      event.reply('open-folder-reply', { success: true });
+    } else {
+      event.reply('open-folder-reply', { success: false, error: success });
+    }
+  } catch (error) {
+    event.reply('open-folder-reply', { success: false, error: error.message });
+  }
+});

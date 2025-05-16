@@ -1,13 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LicitacionesService } from 'src/app/servicios/licitaciones.service';
-import { IonChip, IonBadge } from "@ionic/angular/standalone";
+import { IonChip, IonBadge, IonIcon } from "@ionic/angular/standalone";
+import { addIcons } from 'ionicons';
+import { checkmarkCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-contarlicitaciones',
   templateUrl: './contarlicitaciones.component.html',
   styleUrls: ['./contarlicitaciones.component.scss'],
   standalone: true,
-  imports: [IonBadge, IonChip ]
+  imports: [CommonModule, IonIcon, IonBadge, IonChip ]
 })
 export class ContarlicitacionesComponent  implements OnInit {
 
@@ -20,7 +23,12 @@ export class ContarlicitacionesComponent  implements OnInit {
   enResolucion: number = 0;
   desestimadas: number = 0;
 
-  constructor(private servicioLicitaciones: LicitacionesService) {}
+  @Output() stateSelected = new EventEmitter<string>();
+  @Input() activeFilterState: string = 'todas';
+
+  constructor(private servicioLicitaciones: LicitacionesService) {
+    addIcons({ checkmarkCircleOutline });
+  }
 
   async ngOnInit() {
     await this.inicializarContadores();
@@ -39,6 +47,11 @@ export class ContarlicitacionesComponent  implements OnInit {
     } catch (error) {
       console.error('Error al obtener contadores:', error);
     }
+  }
+
+  selectState(state: string) {
+    console.log(`Estado seleccionado en ContarlicitacionesComponent: ${state}`);
+    this.stateSelected.emit(state);
   }
 
 }

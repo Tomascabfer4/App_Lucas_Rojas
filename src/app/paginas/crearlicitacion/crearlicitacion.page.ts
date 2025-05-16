@@ -1,10 +1,33 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { 
-  IonDatetime, IonTextarea, IonInput, IonSelect, IonContent, IonHeader, IonTitle, IonToolbar, 
-  IonButtons, IonMenuButton, IonCard, IonLabel, IonItem, IonButton, IonSelectOption, IonRow, IonCol, 
-  IonGrid, IonModal, IonDatetimeButton 
+import {
+  FormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  IonDatetime,
+  IonTextarea,
+  IonInput,
+  IonSelect,
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonCard,
+  IonLabel,
+  IonItem,
+  IonButton,
+  IonSelectOption,
+  IonRow,
+  IonCol,
+  IonGrid,
+  IonModal,
+  IonDatetimeButton,
 } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular/standalone';
 import { LicitacionesService } from 'src/app/servicios/licitaciones.service';
@@ -17,13 +40,32 @@ import { ConstantesService } from 'src/app/servicios/constantes.service';
   styleUrls: ['./crearlicitacion.page.scss'],
   standalone: true,
   imports: [
-    IonDatetimeButton, IonModal, IonGrid, IonCol, IonRow, IonDatetime, IonTextarea, IonInput, 
-    IonSelect, IonButton, IonItem, IonLabel, IonCard, IonButtons, IonContent, IonHeader, IonTitle, 
-    IonToolbar, CommonModule, FormsModule, ReactiveFormsModule, IonMenuButton, IonSelectOption
-  ]
+    IonDatetimeButton,
+    IonModal,
+    IonGrid,
+    IonCol,
+    IonRow,
+    IonDatetime,
+    IonTextarea,
+    IonInput,
+    IonSelect,
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonCard,
+    IonButtons,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonMenuButton,
+    IonSelectOption,
+  ],
 })
 export class CrearlicitacionPage implements OnInit {
-
   // Estas propiedades se llenarán desde Firestore mediante ConstantesService
   tipos: string[] = [];
   tiposContrato: string[] = [];
@@ -34,11 +76,11 @@ export class CrearlicitacionPage implements OnInit {
   licitacionForm!: FormGroup;
 
   constructor(
-    private fb: FormBuilder, 
-    private licitacionesService: LicitacionesService, 
+    private fb: FormBuilder,
+    private licitacionesService: LicitacionesService,
     private toastController: ToastController,
-    private constantesService: ConstantesService  // Inyectamos el servicio de constantes
-  ) { }
+    private constantesService: ConstantesService // Inyectamos el servicio de constantes
+  ) {}
 
   async ngOnInit() {
     // Primero, cargamos las constantes dinámicamente desde Firestore.
@@ -71,38 +113,56 @@ export class CrearlicitacionPage implements OnInit {
       presentadapor: ['', Validators.required],
       estadoini: ['', Validators.required],
       estadofinal: ['', Validators.required],
-      rutacarpeta: [''],
-      observaciones: ['']
+      rutacarpeta: ['', Validators.required],
+      observaciones: [''],
     });
 
     // Cargar el siguiente valor de "item" consultando Firebase
-    this.licitacionesService.getMaxItem().then(maxItem => {
-      const nuevoItem = maxItem + 1;
-      this.licitacionForm.get('item')!.setValue(nuevoItem);
+    this.licitacionesService.getMaxItem().then((maxItem) => {
+      this.licitacionForm.get('item')!.setValue(maxItem + 1);
     });
   }
-  
+
   async onSubmit(): Promise<void> {
     if (this.licitacionForm.valid) {
-      // Usamos getRawValue para incluir campos deshabilitados como "item"
       const formData = this.licitacionForm.getRawValue();
-      // Para formatear la fecha
+
+      // Validar si el numexpediente ya existe
+      const existe = await this.licitacionesService.expedienteExiste(
+        formData.numexpediente
+      );
+      if (existe) {
+        const toast = await this.toastController.create({
+          message:
+            'Error: Ya existe una licitación con ese número de expediente.',
+          duration: 3000,
+          color: 'danger',
+        });
+        await toast.present();
+        return; // No continuar con la creación
+      }
+
+      // Formatear fecha
       if (formData.fechapresentacion) {
         formData.fechapresentacion = formData.fechapresentacion.split('T')[0];
       }
+
       try {
-        const id: string = await this.licitacionesService.crearLicitacion(formData);
+        const id: string = await this.licitacionesService.crearLicitacion(
+          formData
+        );
         console.log('Licitación creada con ID:', id);
         const toast = await this.toastController.create({
           message: 'Licitación creada correctamente',
           duration: 2000,
-          color: 'success'
+          color: 'success',
         });
         await toast.present();
+
         this.licitacionForm.reset();
+
         const maxItem = await this.licitacionesService.getMaxItem();
         this.licitacionForm.get('item')!.setValue(maxItem + 1);
-        
       } catch (error) {
         console.error('Error al crear la licitación:', error);
       }

@@ -1,6 +1,6 @@
 {
   "name": "App_Lucas_Rojas",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "author": "Tomás Cabello Fernández",
   "main": "electron-main.js",
   "homepage": "https://ionicframework.com/",
@@ -19,15 +19,22 @@
     "appId": "com.lucasrojas.app",
     "files": [
       "www/**/*",
-      "electron-main.js"
+      "electron-main.js",
+      "preload.js"
     ],
     "directories": {
       "output": "dist_electron",
       "buildResources": "www/assets/icon"
     },
-    "mac":   { "icon": "icono.icns" },
-    "linux": { "icon": "icono.png" },
-    "win":   { "icon": "icono.ico" }
+    "mac": {
+      "icon": "icono.icns"
+    },
+    "linux": {
+      "icon": "icono.png"
+    },
+    "win": {
+      "icon": "icono.ico"
+    }
   },
   "private": true,
   "dependencies": {
@@ -47,9 +54,11 @@
     "@capacitor/local-notifications": "^7.0.1",
     "@capacitor/status-bar": "7.0.0",
     "@ionic/angular": "^8.0.0",
+    "axios": "^1.9.0",
     "chart.js": "^4.4.8",
     "date-fns": "^4.1.0",
     "firebase-admin": "^13.2.0",
+    "google-auth-library": "^9.15.1",
     "ionicons": "^7.0.0",
     "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",

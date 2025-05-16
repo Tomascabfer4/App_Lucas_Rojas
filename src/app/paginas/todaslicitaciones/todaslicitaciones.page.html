@@ -6,7 +6,9 @@
 
     <div class="header-content">
       <ion-title ><strong>Todas Las Licitaciones</strong></ion-title>
-      <app-contarlicitaciones></app-contarlicitaciones>
+      <app-contarlicitaciones
+          (stateSelected)="onStateFilterSelected($event)"
+          [activeFilterState]="currentFilterState"  ></app-contarlicitaciones>
     </div>
   </ion-toolbar>
 </ion-header>
@@ -22,6 +24,7 @@
     [numExpediente]="numExpediente"
     [desdeFecha]="desdeFecha"
     [hastaFecha]="hastaFecha"
+    [filtroEstado]="currentFilterState" 
   >
   </app-listarlicitaciones>
 
