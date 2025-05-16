@@ -1,11 +1,11 @@
 export const environment = {
   production: true,
   firebaseConfig: {
-    apiKey: "AIzaSyAz0S1SnT-2DEhbNm6WL72rbKHFf5IK6QI",
-    authDomain: "lucasrojasprueba.firebaseapp.com",
-    projectId: "lucasrojasprueba",
-    storageBucket: "lucasrojasprueba.firebasestorage.app",
-    messagingSenderId: "435562339593",
-    appId: "1:435562339593:web:a3e56c154d5b71e31a87d8"
-  }
+    apiKey: 'AIzaSyAsU007f7NtFK5b0l_gZCuQtzut3A84Frs',
+    authDomain: 'licitacioneslucasrojas-26381.firebaseapp.com',
+    projectId: 'licitacioneslucasrojas-26381',
+    storageBucket: 'licitacioneslucasrojas-26381.firebasestorage.app',
+    messagingSenderId: '26703554360',
+    appId: '1:26703554360:web:1dda97830a79586ece43cd',
+  },
 };

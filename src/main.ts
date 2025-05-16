@@ -10,7 +10,6 @@ import localeEs from '@angular/common/locales/es';
 import { registerLocaleData } from '@angular/common';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
-
 registerLocaleData(localeEs, 'es');
 
 import { routes } from './app/app.routes';
@@ -24,7 +23,7 @@ bootstrapApplication(AppComponent, {
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideFirebaseApp(() => initializeApp( environment.firebaseConfig )),
-    provideFirestore(() => getFirestore()), 
+    provideFirestore(() => getFirestore(initializeApp(environment.firebaseConfig), 'licitaciones')),
     provideAuth(() => getAuth()), 
   ],
 });
