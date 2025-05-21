@@ -33,6 +33,15 @@
           </ion-item>
 
           <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button (click)="reloadPage()">
+              <ion-icon
+                aria-hidden="true"
+                name="refresh-outline"  slot="start"
+              ></ion-icon>
+              <ion-label>Recargar página</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
             <ion-item lines="none" button (click)="logout()">
               <ion-icon
                 aria-hidden="true"

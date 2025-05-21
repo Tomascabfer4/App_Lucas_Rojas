@@ -1,3 +1,4 @@
+
 import { Injectable } from '@angular/core';
 import {
   Firestore,
@@ -21,8 +22,11 @@ import { Opcionespaginacion } from '../interfaces/opcionespaginacion';
 @Injectable({
   providedIn: 'root',
 })
+
 export class LicitacionesService {
-  constructor(private firestore: Firestore) {}
+
+  constructor(private firestore: Firestore) {
+  }
 
   // Este metodo se encarga de obtener una licitaciones de 10 en 10, cuando el usuario desplace hacia el fondo cargaran
   // otros 10 de forma automatica hasta que no existan registros
