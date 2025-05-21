@@ -27,6 +27,7 @@ import { LicitacionesService } from 'src/app/servicios/licitaciones.service';
 import { EditarlicitacionComponent } from 'src/app/componentes/editarlicitacion/editarlicitacion.component';
 import { Opcionespaginacion } from 'src/app/interfaces/opcionespaginacion';
 import { ConstantesService } from 'src/app/servicios/constantes.service';
+import { AlgoliaService } from 'src/app/servicios/algolia.service';
 
 
 @Component({
@@ -74,7 +75,9 @@ export class ListarlicitacionesComponent implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private modalController: ModalController,
-    private constantesService: ConstantesService // Inyección del servicio de constantes
+    private constantesService: ConstantesService,
+    private algoliaService: AlgoliaService // Inyección del servicio de constantes
+
   ) {
     addIcons({ folderOpenSharp, createSharp, trashBinSharp });
   }
@@ -110,10 +113,18 @@ export class ListarlicitacionesComponent implements OnInit {
   } // Utiliza la función del servicio para cargar licitaciones de 10 en 10.
 
   async cargarLicitaciones(event?: any) {
-    if (this.isLoading || this.noMoreData) return;
-    this.isLoading = true;
-    try {
-      // Construir el objeto de opciones
+  if (this.isLoading || this.noMoreData) return;
+  this.isLoading = true;
+
+  try {
+    // Si hay búsqueda por cliente, usar Algolia
+    if (this.busquedaCliente.trim()) {
+      const hits = await this.algoliaService.searchCliente(this.busquedaCliente);
+
+      this.licitaciones = hits;
+      this.noMoreData = true; // Evita paginación Firestore
+    } else {
+      // Si no hay búsqueda, usa Firestore normal
       const options: Opcionespaginacion = {
         limitNumber: 10,
         lastVisible: this.lastVisibleDoc,
@@ -121,10 +132,10 @@ export class ListarlicitacionesComponent implements OnInit {
         numExpediente: this.numExpediente,
         desdeFecha: this.desdeFecha,
         hastaFecha: this.hastaFecha,
-        adjudicadas: this.filtroEstado === 'ADJUDICADA', // Si se filtra adjudicadas
+        adjudicadas: this.filtroEstado === 'ADJUDICADA',
         presentadapor: this.presentadapor,
-        filterState: this.filtroEstado, // Se filtra por usuario
-      }; // Llamar al método unificado
+        filterState: this.filtroEstado,
+      };
 
       const result = await this.serviciolicitacion.getDatosPaginados(options);
 
@@ -136,14 +147,14 @@ export class ListarlicitacionesComponent implements OnInit {
       if (result.data.length < 10) {
         this.noMoreData = true;
       }
-    } catch (error) {
-      console.error('Error loading data:', error);
-    } finally {
-      this.isLoading = false;
-
-      if (event) event.target.complete();
     }
-  } // Método para eliminar
+  } catch (error) {
+    console.error('Error loading data:', error);
+  } finally {
+    this.isLoading = false;
+    if (event) event.target.complete();
+  }
+}
 
   async eliminarLicitacion(firebaseId: string) {
     const alert = await this.alertController.create({
@@ -302,7 +313,6 @@ export class ListarlicitacionesComponent implements OnInit {
           { text: 'Cerrar', role: 'cancel' },
         ],
       });
-
       await alert.present();
     }
   }

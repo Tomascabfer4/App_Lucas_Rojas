@@ -22,6 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { searchOutline } from 'ionicons/icons';
+import { AlgoliaService } from 'src/app/servicios/algolia.service';
 
 @Component({
   selector: 'app-filtrarlicitaciones',
@@ -61,7 +62,7 @@ export class FiltrarlicitacionesComponent implements OnInit {
   @ViewChild('desdeModal') desdeModal!: IonModal;
   @ViewChild('hastaModal') hastaModal!: IonModal;
 
-  constructor() {
+  constructor(private algoliaService: AlgoliaService) {
     addIcons({ searchOutline });
   }
 

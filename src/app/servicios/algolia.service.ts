@@ -1,38 +1,55 @@
 import { Injectable } from '@angular/core';
-import { algoliasearch } from 'algoliasearch';
+//import { algoliasearch } from 'algoliasearch';
+import * as algoliasearch from 'algoliasearch/lite';
+import { liteClient } from 'algoliasearch/lite';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlgoliaService {
+  private client = liteClient('RF5U65QR0Z', '38733992848bd0ec64ab3643b1422a87');
 
-  private client: any; // Opcional: Puedes usar 'any' temporalmente si TypeScript insiste en el error.
-                      // Lo ideal es que se infiera.
-  private index: any; // Igual aquí.
+  async searchCliente(busquedaCliente: string): Promise<any[]> {
+    try {
+      const { results } = await this.client.search({
+        requests: [
+          {
+            indexName: 'Indice_algolia',
+            query: busquedaCliente,
+          },
+        ],
+      });
 
-  private readonly ALGOLIA_APP_ID = 'RF5U65QR0Z';
-  private readonly ALGOLIA_SEARCH_API_KEY = '38733992848bd0ec64ab3643b1422a87';
-  private readonly ALGOLIA_INDEX_NAME = 'Indice_algolia';
-
-  constructor() { 
-
-    this.client = algoliasearch(this.ALGOLIA_APP_ID, this.ALGOLIA_SEARCH_API_KEY);
-    this.index = this.client.initIndex(this.ALGOLIA_INDEX_NAME);
+      const firstResult = results[0] as { hits?: any[] };
+      console.log('✅ Resultados de Algolia (liteClient):', firstResult.hits);
+      return firstResult.hits || [];
+    } catch (error) {
+      console.error('Error al buscar en Algolia con liteClient:', error);
+      throw error;
+    }
   }
 
-  /**
-   * Realiza una búsqueda en el índice de Algolia.
-   * @param searchTerm La cadena de búsqueda.
-   * @param options Opciones adicionales para la búsqueda (filtros, facetas, etc.).
-   * @returns Una promesa que resuelve con los resultados (hits) de la búsqueda.
-   */
-  async search(searchTerm: string, options?: any): Promise<any[]> {
+  async searchSuggestions(query: string): Promise<string[]> {
     try {
-      const results = await this.index.search(searchTerm, options);
-      return results.hits; // Algolia devuelve un objeto con la propiedad 'hits'
+      const { results } = await this.client.search({
+        requests: [
+          {
+            indexName: 'Indice_algolia',
+            query: query,
+            params:
+              'attributesToRetrieve=cliente&restrictSearchableAttributes=cliente',
+          },
+        ],
+      });
+
+      const firstResult = results[0] as { hits?: any[] };
+      console.log('Resultados crudos de Algolia:', firstResult.hits); // Para depuración
+      return (
+        firstResult.hits?.map((hit: any) => hit.cliente).filter(Boolean) || []
+      );
     } catch (error) {
-      console.error('Error al buscar en Algolia:', error);
-      throw error;
+      console.error('Error en sugerencias:', error);
+      return [];
     }
   }
 }
