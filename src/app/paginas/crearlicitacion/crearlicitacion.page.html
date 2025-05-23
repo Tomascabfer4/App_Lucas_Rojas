@@ -15,7 +15,11 @@
 <ion-content class="custom-content" *ngIf="licitacionForm">
   <div class="card-container">
     <ion-card>
-      <img src="assets/imagenes/logo.png" alt="Logo Empresa" class="company-logo" />
+      <img
+        src="assets/imagenes/logo.png"
+        alt="Logo Empresa"
+        class="company-logo"
+      />
       <ion-grid>
         <ion-row>
           <!-- Columna Izquierda: Formulario -->
@@ -23,7 +27,12 @@
             <form [formGroup]="licitacionForm" (ngSubmit)="onSubmit()">
               <!-- Campo Item (solo lectura) -->
               <ion-item>
-                <ion-label><strong>Licitación Número {{ licitacionForm.get('item')?.value }}</strong></ion-label>
+                <ion-label
+                  ><strong
+                    >Licitación Número {{ licitacionForm.get('item')?.value
+                    }}</strong
+                  ></ion-label
+                >
               </ion-item>
               <!-- Cliente -->
               <ion-item>
@@ -54,13 +63,20 @@
               </ion-item>
               <!-- Fecha de presentación -->
               <ion-item>
-                <ion-label position="stacked">Fecha de presentación</ion-label> <br>
+                <ion-label position="stacked">Fecha de presentación</ion-label
+                ><br />
                 <ion-datetime-button datetime="date"></ion-datetime-button>
                 <ion-modal [keepContentsMounted]="true" cssClass="custom-modal">
                   <ng-template>
-                    <ion-datetime id="date" presentation="date" formControlName="fechapresentacion"></ion-datetime>
-                  </ng-template>
-                </ion-modal><br>
+                    <ion-datetime
+                      id="date"
+                      presentation="date"
+                      formControlName="fechapresentacion"
+                      max="2100-12-31"
+                      ></ion-datetime
+                    >
+                  </ng-template> </ion-modal
+                ><br />
               </ion-item>
               <!-- Tipo -->
               <ion-item>
@@ -184,13 +200,14 @@
               <!-- Estado Inicial -->
               <ion-item>
                 <ion-label position="stacked">Estado Inicial</ion-label>
-                <ion-select 
-                cancelText="Cancelar"
-                okText="Aceptar"
-                formControlName="estadoini"
-                placeholder="Seleccione el estado inicial"
-                interface="alert"
-                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }">
+                <ion-select
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  formControlName="estadoini"
+                  placeholder="Seleccione el estado inicial"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
                   <ion-select-option
                     *ngFor="let estado of estadosIniciales"
                     [value]="estado"
@@ -202,13 +219,14 @@
               <!-- Estado Final -->
               <ion-item>
                 <ion-label position="stacked">Estado Final</ion-label>
-                <ion-select 
-                formControlName="estadofinal" 
-                cancelText="Cancelar"
-                okText="Aceptar"
-                placeholder="Seleccione el estado final"
-                interface="alert"
-                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }">
+                <ion-select
+                  formControlName="estadofinal"
+                  cancelText="Cancelar"
+                  okText="Aceptar"
+                  placeholder="Seleccione el estado final"
+                  interface="alert"
+                  [interfaceOptions]="{ cssClass: 'custom-select-alert' }"
+                >
                   <ion-select-option
                     *ngFor="let estado of estadosFinales"
                     [value]="estado"
@@ -229,7 +247,10 @@
               <!-- Observaciones -->
               <ion-item>
                 <ion-label position="stacked">Observaciones</ion-label>
-                <ion-textarea formControlName="observaciones" placeholder="¡No dudes en dar mas información!"></ion-textarea>
+                <ion-textarea
+                  formControlName="observaciones"
+                  placeholder="¡No dudes en dar mas información!"
+                ></ion-textarea>
               </ion-item>
               <ion-button
                 expand="block"
@@ -244,7 +265,10 @@
           <!-- Columna Derecha: Imagen e Instrucciones -->
           <ion-col size="12" size="6" class="ion-text-center">
             <img src="assets/imagenes/imagenForm.png" alt="Instrucciones" />
-            <h2>¡Vamos a crear tu nueva licitación! Completa los campos y todo estará listo. 😊</h2>
+            <h2>
+              ¡Vamos a crear tu nueva licitación! Completa los campos y todo
+              estará listo. 😊
+            </h2>
           </ion-col>
         </ion-row>
       </ion-grid>

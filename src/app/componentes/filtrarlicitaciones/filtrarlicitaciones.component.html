@@ -46,6 +46,7 @@
             <ion-datetime
               presentation="date"
               displayFormat="d MMM y"
+              max="2100-12-31"
               [(ngModel)]="desdeFechaControl"
               (ionChange)="onDateScrollDesdeChange($event)"
             ></ion-datetime>
@@ -98,6 +99,7 @@
             <ion-datetime
               presentation="date"
               displayFormat="d MMM y"
+              max="2100-12-31"
               [(ngModel)]="hastaFechaControl"
               (ionChange)="onDateScrollHastaChange($event)"
             ></ion-datetime>

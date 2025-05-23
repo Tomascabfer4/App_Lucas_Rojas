@@ -1,9 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Editar Licitación {{licitacionCargada.numexpediente}}</ion-title>
+    <ion-title
+      >Editar Licitación {{ licitacionCargada.numexpediente }}</ion-title
+    >
     <ion-buttons slot="end">
       <ion-button (click)="cancelar()">Cancelar</ion-button>
-      <ion-button (click)="guardar()" [disabled]="formulario.invalid">Guardar</ion-button>
+      <ion-button (click)="guardar()" [disabled]="formulario.invalid"
+        >Guardar</ion-button
+      >
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -12,30 +16,59 @@
   <form [formGroup]="formulario" (ngSubmit)="guardar()">
     <ion-item>
       <ion-label position="stacked" class="label-name">Cliente</ion-label>
-      <ion-input formControlName="cliente" placeholder="Escribe un cliente"></ion-input>
+      <ion-input
+        formControlName="cliente"
+        placeholder="Escribe un cliente"
+      ></ion-input>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="stacked" class="label-name">Número de expediente</ion-label>
-      <ion-input formControlName="numexpediente" placeholder="Indica el número de expediente"></ion-input>
+      <ion-label position="stacked" class="label-name"
+        >Número de expediente</ion-label
+      >
+      <ion-input
+        formControlName="numexpediente"
+        placeholder="Indica el número de expediente"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Título</ion-label>
-      <ion-textarea formControlName="titulo" placeholder="Escribe el título"></ion-textarea>
+      <ion-textarea
+        formControlName="titulo"
+        placeholder="Escribe el título"
+      ></ion-textarea>
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="stacked" class="label-name">Fecha de Presentación</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Fecha de Presentación</ion-label
+      ><br />
       <ion-chip id="fechaPresentacion" class="date-chip">
-        {{ fechaPresentacionSelec ? (fechaPresentacionSelec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          fechaPresentacionSelec
+            ? (fechaPresentacionSelec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="fechaPresentacion" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="fechaPresentacion"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
             #popoverDatetime
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'fechapresentacion', 'fechaPresentacionSelec')">
+            max="2100-12-31"
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'fechapresentacion',
+                'fechaPresentacionSelec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
@@ -44,17 +77,20 @@
     <!-- INFORMACIÓN DEL CONTRATO -->
 
     <ion-item class="blue-line-item">
-      <ion-label class="bold-label" position="stacked">Información del contrato</ion-label>
+      <ion-label class="bold-label" position="stacked"
+        >Información del contrato</ion-label
+      >
     </ion-item>
-    
+
     <ion-item>
-      <ion-label position="stacked" class="label-name" >Tipo</ion-label>
-      <ion-select 
-      formControlName="tipo" 
-      aria-label="Tipo" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el tipo">
+      <ion-label position="stacked" class="label-name">Tipo</ion-label>
+      <ion-select
+        formControlName="tipo"
+        aria-label="Tipo"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el tipo"
+      >
         <ion-select-option *ngFor="let tipo of tipos" [value]="tipo">
           {{ tipo }}
         </ion-select-option>
@@ -62,56 +98,105 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Tipo de Contrato</ion-label>
-      <ion-select 
-      formControlName="tipocontrato" 
-      aria-label="Tipo de Contrato" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el tipo de contrato">
-        <ion-select-option *ngFor="let tipocontrato of tiposContrato" [value]="tipocontrato" >
+      <ion-label position="stacked" class="label-name"
+        >Tipo de Contrato</ion-label
+      >
+      <ion-select
+        formControlName="tipocontrato"
+        aria-label="Tipo de Contrato"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el tipo de contrato"
+      >
+        <ion-select-option
+          *ngFor="let tipocontrato of tiposContrato"
+          [value]="tipocontrato"
+        >
           {{ tipocontrato }}
         </ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Importe en euros</ion-label>
+      <ion-label position="stacked" class="label-name"
+        >Importe en euros</ion-label
+      >
       <ion-input formControlName="importe"></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Fecha de Formalización</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Fecha de Formalización</ion-label
+      ><br />
       <ion-chip id="fechaFormalizacion" class="date-chip">
-        {{ fechaFormalizacionSelec ? (fechaFormalizacionSelec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          fechaFormalizacionSelec
+            ? (fechaFormalizacionSelec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="fechaFormalizacion" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="fechaFormalizacion"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
+            max="2100-12-31"
             #popoverDatetime
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'fechaformalizacion', 'fechaFormalizacionSelec')">
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'fechaformalizacion',
+                'fechaFormalizacionSelec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Duración del Contrato</ion-label>
-      <ion-input formControlName="duracioncontratoanyo" placeholder="No especificado"></ion-input>
+      <ion-label position="stacked" class="label-name"
+        >Duración del Contrato</ion-label
+      >
+      <ion-input
+        formControlName="duracioncontratoanyo"
+        placeholder="No especificado"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Fecha Fin del Contrato</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Fecha Fin del Contrato</ion-label
+      ><br />
       <ion-chip id="fechaFinContrato" class="date-chip">
-        {{ fechaFinContratoSelec ? (fechaFinContratoSelec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          fechaFinContratoSelec
+            ? (fechaFinContratoSelec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="fechaFinContrato" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="fechaFinContrato"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
             #popoverDatetime
+            max="2100-12-31"
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'fechafincontrato', 'fechaFinContratoSelec')">
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'fechafincontrato',
+                'fechaFinContratoSelec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
@@ -119,52 +204,109 @@
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Prorrogas</ion-label>
-      <ion-input formControlName="prorrogas" placeholder="No especificadas"></ion-input>
+      <ion-input
+        formControlName="prorrogas"
+        placeholder="No especificadas"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Primera Prorroga</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Primera Prorroga</ion-label
+      ><br />
       <ion-chip id="prorroga1" class="date-chip">
-        {{ Prorroga1Selec ? (Prorroga1Selec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          Prorroga1Selec
+            ? (Prorroga1Selec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="prorroga1" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="prorroga1"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
             #popoverDatetime
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'prorroga1', 'Prorroga1Selec')">
+            max="2100-12-31"
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'prorroga1',
+                'Prorroga1Selec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Segunda Prorroga</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Segunda Prorroga</ion-label
+      ><br />
       <ion-chip id="prorroga2" class="date-chip">
-        {{ Prorroga2Selec ? (Prorroga2Selec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          Prorroga2Selec
+            ? (Prorroga2Selec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="prorroga2" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="prorroga2"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
             #popoverDatetime
+            max="2100-12-31"
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'prorroga2', 'Prorroga2Selec')">
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'prorroga2',
+                'Prorroga2Selec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Tercera Prorroga</ion-label><br>
+      <ion-label position="stacked" class="label-name"
+        >Tercera Prorroga</ion-label
+      ><br />
       <ion-chip id="prorroga3" class="date-chip">
-        {{ Prorroga3Selec ? (Prorroga3Selec | date: 'd MMM y') : 'Seleccione una fecha' }}
+        {{
+          Prorroga3Selec
+            ? (Prorroga3Selec | date : "d MMM y")
+            : "Seleccione una fecha"
+        }}
       </ion-chip>
-      <ion-popover trigger="prorroga3" show-backdrop="true" cssClass="custom-popover">
+      <ion-popover
+        trigger="prorroga3"
+        show-backdrop="true"
+        cssClass="custom-popover"
+      >
         <ng-template>
           <ion-datetime
             #popoverDatetime
+            max="2100-12-31"
             presentation="date"
-            (ionChange)="actualizarFecha(popoverDatetime.value, 'prorroga3', 'Prorroga3Selec')">
+            (ionChange)="
+              actualizarFecha(
+                popoverDatetime.value,
+                'prorroga3',
+                'Prorroga3Selec'
+              )
+            "
+          >
           </ion-datetime>
         </ng-template>
       </ion-popover>
@@ -172,33 +314,45 @@
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Fianza</ion-label>
-      <ion-input formControlName="fianza" placeholder="No hay fianza"></ion-input>
+      <ion-input
+        formControlName="fianza"
+        placeholder="No hay fianza"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Garantía</ion-label>
-      <ion-input formControlName="prorrogas" placeholder="No hay garantía"></ion-input>
+      <ion-input
+        formControlName="prorrogas"
+        placeholder="No hay garantía"
+      ></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Observaciones</ion-label>
-      <ion-textarea formControlName="observaciones" placeholder="No hay observaciones"></ion-textarea>
+      <ion-textarea
+        formControlName="observaciones"
+        placeholder="No hay observaciones"
+      ></ion-textarea>
     </ion-item>
 
     <!-- RESPONSABLES DE LA LICITACIÓN -->
 
     <ion-item class="blue-line-item">
-      <ion-label class="bold-label" position="stacked">Responsables de la licitación</ion-label>
+      <ion-label class="bold-label" position="stacked"
+        >Responsables de la licitación</ion-label
+      >
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Captada por</ion-label>
-      <ion-select 
-      formControlName="captadapor" 
-      aria-label="Captada por" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el empleado">
+      <ion-select
+        formControlName="captadapor"
+        aria-label="Captada por"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el empleado"
+      >
         <ion-select-option *ngFor="let persona of personas" [value]="persona">
           {{ persona }}
         </ion-select-option>
@@ -207,12 +361,13 @@
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Estudiada por</ion-label>
-      <ion-select 
-      formControlName="estudiopor" 
-      aria-label="Estudio por" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el empleado">
+      <ion-select
+        formControlName="estudiopor"
+        aria-label="Estudio por"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el empleado"
+      >
         <ion-select-option *ngFor="let persona of personas" [value]="persona">
           {{ persona }}
         </ion-select-option>
@@ -220,13 +375,16 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Presupuestada por</ion-label>
-      <ion-select 
-      formControlName="presupuestopor" 
-      aria-label="Presupuesto por" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el empleado">
+      <ion-label position="stacked" class="label-name"
+        >Presupuestada por</ion-label
+      >
+      <ion-select
+        formControlName="presupuestopor"
+        aria-label="Presupuesto por"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el empleado"
+      >
         <ion-select-option *ngFor="let persona of personas" [value]="persona">
           {{ persona }}
         </ion-select-option>
@@ -234,13 +392,16 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Presentada por</ion-label>
-      <ion-select 
-      formControlName="presentadapor"
-      aria-label="Presentada por" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el empleado">
+      <ion-label position="stacked" class="label-name"
+        >Presentada por</ion-label
+      >
+      <ion-select
+        formControlName="presentadapor"
+        aria-label="Presentada por"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el empleado"
+      >
         <ion-select-option *ngFor="let persona of personas" [value]="persona">
           {{ persona }}
         </ion-select-option>
@@ -249,12 +410,13 @@
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Responsable</ion-label>
-      <ion-select 
-      formControlName="responsable" 
-      aria-label="Responsable" 
-      cancelText="Cancelar"
-      okText="Aceptar"
-      placeholder="Selecciona el empleado">
+      <ion-select
+        formControlName="responsable"
+        aria-label="Responsable"
+        cancelText="Cancelar"
+        okText="Aceptar"
+        placeholder="Selecciona el empleado"
+      >
         <ion-select-option *ngFor="let persona of personas" [value]="persona">
           {{ persona }}
         </ion-select-option>
@@ -268,14 +430,21 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="label-name">Ruta de la Carpeta</ion-label>
-      <ion-textarea formControlName="rutacarpeta" placeholder="No hay ruta"></ion-textarea>
+      <ion-label position="stacked" class="label-name"
+        >Ruta de la Carpeta</ion-label
+      >
+      <ion-textarea
+        formControlName="rutacarpeta"
+        placeholder="No hay ruta"
+      ></ion-textarea>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="label-name">Eventos</ion-label>
-      <ion-input formControlName="eventos" placeholder="No hay eventos"></ion-input>
+      <ion-input
+        formControlName="eventos"
+        placeholder="No hay eventos"
+      ></ion-input>
     </ion-item>
-    
   </form>
 </ion-content>
