@@ -1,91 +1,92 @@
-  ion-accordion-group{
-    padding-right: 25px;
-    padding-left: 10px;
-  }
-  
-  ion-accordion-group ion-item {
-    margin-bottom: 0 !important;
-    --border-width: 0 !important; 
-    --inner-border-width: 0 !important; 
-  }
-  
-  .bold-icon {
-    font-size: 1.2rem;
-    margin-right: 14px;
-    --ionicon-stroke-width: 55px;
-  }
-  
-  .custom-modal {
-    /* Ajusta la altura y anchura del modal */
-    --width: auto;             /* en Ionic 6+ */
-    --height: auto;            /* en Ionic 6+ */
-    --min-width: unset;        /* Si deseas que no tenga un ancho mínimo */
-    --max-width: 500px;        /* Ajusta a tu preferencia */
-    --min-height: unset;
-    --max-height: unset;
-    
-    /* Para algunos temas (iOS/MD), también puede ser necesario apuntar
-       a la clase .modal-wrapper interna: */
-    .modal-wrapper {
-      width: auto;
-      height: auto;
-      max-width: 500px;
-    }
+ion-accordion-group {
+  overflow: visible !important;
+  position: relative !important;
+  padding-right: 25px;
+  padding-left: 10px;
+  z-index: 10 !important;
+}
 
-    .modal-buttons {
-      display: flex;
-      flex-direction: row;       // Botones en línea
-      justify-content: flex-end; // Alineados a la derecha
-      gap: 8px;                  // Espaciado entre botones
-      background-color: transparent; // Fondo blanco para el contenedor
-      padding: 4px 8px;          // Padding reducido
-      
-      // Opcional: Reducir el tamaño de los botones (más compactos)
-      ion-button {
-        --padding-start: 8px;
-        --padding-end: 8px;
-        --padding-top: 4px;
-        --padding-bottom: 4px;
-        --border-radius: 4px;
-        font-size: 0.85rem;
-      }
-    }
+ion-accordion-group ion-item {
+  margin-bottom: 0 !important;
+  --border-width: 0 !important;
+  --inner-border-width: 0 !important;
+}
+
+.bold-icon {
+  font-size: 1.2rem;
+  margin-right: 14px;
+  --ionicon-stroke-width: 55px;
+}
+
+.custom-modal {
+  --width: auto;
+  --height: auto;
+  --min-width: unset;
+  --max-width: 500px;
+  --min-height: unset;
+  --max-height: unset;
+
+  .modal-wrapper {
+    width: auto;
+    height: auto;
+    max-width: 500px;
   }
-  
-  .rounded-search {
-    --border-radius: 10px;
-  }
-  
-  .filters-container {
+
+  .modal-buttons {
     display: flex;
-    flex-wrap: wrap;        /* Para que si no hay espacio, baje a la siguiente línea */
-    align-items: flex-end;  /* Ajusta según tu preferencia (center, baseline, etc.) */
-    gap: 1rem;              /* Espacio entre los elementos */
-  }
-  
-  /* Ajustar los ion-item y ion-searchbar si quieres que tengan un ancho específico */
-  .filters-container ion-item,
-  .filters-container ion-searchbar {
-    flex: 1;                /* Para que todos crezcan en la misma proporción */
-    min-width: 150px;       /* Ancho mínimo para que no se encojan demasiado */
-  }
-  
-  ion-chip.date-chip {
-    border-radius: 8px !important;
-    --background: #ececec;
-    --color: #333;
-    font-weight: bold;
-  }
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 8px;
+    background-color: transparent;
+    padding: 4px 8px;
 
-  .sugerencias-list {
-  max-height: 10%px;
-  max-width: 20%;
-  overflow-y: auto;
-  position: absolute;
-  width: 100%;
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --padding-top: 4px;
+      --padding-bottom: 4px;
+      --border-radius: 4px;
+      font-size: 0.85rem;
+    }
+  }
+}
+
+.rounded-search {
+  --border-radius: 10px;
+}
+
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.filters-container ion-item,
+.filters-container ion-searchbar {
+  flex: 1;
+  min-width: 150px;
+}
+
+ion-chip.date-chip {
+  border-radius: 8px !important;
+  --background: #ececec;
+  --color: #333;
+  font-weight: bold;
+}
+
+.search-container {
+  position: relative;
+}
+
+.sugerencias-list {
   background: white;
-  z-index: 10;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-top: -10px;
+  border-radius: 8px;
+  max-height: 40vh;
+  overflow-y: auto;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  /* Se define por [ngStyle] => no poner position aquí */
 }

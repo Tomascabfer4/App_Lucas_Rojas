@@ -1,6 +1,6 @@
 export interface Licitacion {
     firebaseid:string,
-    id:string,
+    objectid:string,
     item:number,
     fechapresentacion:Date,
     cliente:string,

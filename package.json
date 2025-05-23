@@ -1,6 +1,6 @@
 {
   "name": "App_Lucas_Rojas",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "author": "Tomás Cabello Fernández",
   "main": "electron-main.js",
   "homepage": "https://ionicframework.com/",

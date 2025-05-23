@@ -145,21 +145,37 @@ export class EditarlicitacionComponent implements OnInit, OnChanges {
   }
   
   async guardar() {
-    if (this.formulario.valid) {
-      try {
-        await this.servicio.actualizarLicitacion(
-          this.firebaseId,
-          this.formulario.value
-        );
-        this.modalCtrl.dismiss({ 
-          actualizado: true,
-          nuevosDatos: this.formulario.value 
-        });
-      } catch (error) {
-        console.error('Error guardando cambios:', error);
+  if (this.formulario.valid) {
+    try {
+      // Para depurar los valores disponibles
+      console.log("this.firebaseId:", this.firebaseId);
+      console.log("this.licitacionCargada:", this.licitacionCargada);
+      console.log("this.formulario.value:", this.formulario.value);
+      
+      // Se obtiene el ID: primero se usa this.firebaseId; de lo contrario se intenta obtenerlo desde licitacionCargada o del formulario
+      const licitacionId = this.firebaseId || this.licitacionCargada?.firebaseId || this.formulario.value.objectID;
+      
+      if (!licitacionId) {
+        console.error("❌ No se puede actualizar sin un ID válido.");
+        throw new Error("No se puede actualizar sin un identificador válido.");
       }
+      
+      console.log("🆔 Actualizando licitación con ID:", licitacionId);
+
+      // Construir el objeto de actualización asegurándose de usar "firebaseid" en minúsculas
+      const datosLicitacion = { ...this.formulario.value, firebaseid: licitacionId };
+
+      await this.servicio.actualizarLicitacion(datosLicitacion);
+
+      this.modalCtrl.dismiss({
+        actualizado: true,
+        nuevosDatos: this.formulario.value
+      });
+    } catch (error) {
+      console.error("❌ Error guardando cambios:", error);
     }
   }
+}
 
   cancelar() {
     this.modalCtrl.dismiss();

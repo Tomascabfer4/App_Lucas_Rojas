@@ -29,7 +29,6 @@ import { Opcionespaginacion } from 'src/app/interfaces/opcionespaginacion';
 import { ConstantesService } from 'src/app/servicios/constantes.service';
 import { AlgoliaService } from 'src/app/servicios/algolia.service';
 
-
 @Component({
   selector: 'app-listarlicitaciones',
   templateUrl: './listarlicitaciones.component.html',
@@ -77,7 +76,6 @@ export class ListarlicitacionesComponent implements OnInit {
     private modalController: ModalController,
     private constantesService: ConstantesService,
     private algoliaService: AlgoliaService // Inyección del servicio de constantes
-
   ) {
     addIcons({ folderOpenSharp, createSharp, trashBinSharp });
   }
@@ -113,50 +111,65 @@ export class ListarlicitacionesComponent implements OnInit {
   } // Utiliza la función del servicio para cargar licitaciones de 10 en 10.
 
   async cargarLicitaciones(event?: any) {
-  if (this.isLoading || this.noMoreData) return;
-  this.isLoading = true;
+    if (this.isLoading || this.noMoreData) return;
+    this.isLoading = true;
 
-  try {
-    // Si hay búsqueda por cliente, usar Algolia
-    if (this.busquedaCliente.trim()) {
-      const hits = await this.algoliaService.searchCliente(this.busquedaCliente);
+    try {
+      const hayFiltrosAlgolia =
+        this.busquedaCliente.trim() || this.numExpediente.trim();
 
-      this.licitaciones = hits;
-      this.noMoreData = true; // Evita paginación Firestore
-    } else {
-      // Si no hay búsqueda, usa Firestore normal
-      const options: Opcionespaginacion = {
-        limitNumber: 10,
-        lastVisible: this.lastVisibleDoc,
-        busquedaCliente: this.busquedaCliente,
-        numExpediente: this.numExpediente,
-        desdeFecha: this.desdeFecha,
-        hastaFecha: this.hastaFecha,
-        adjudicadas: this.filtroEstado === 'ADJUDICADA',
-        presentadapor: this.presentadapor,
-        filterState: this.filtroEstado,
-      };
+      if (
+        hayFiltrosAlgolia ||
+        this.desdeFecha.trim() ||
+        this.hastaFecha.trim()
+      ) {
+        // Uso de Firebase para filtrar por fechas y Algolia para búsqueda rápida,
+        // ahora incluyendo el filtro de estado.
+        const hits = await this.algoliaService.searchCombinado(
+          this.busquedaCliente.trim(),
+          this.numExpediente.trim(),
+          this.desdeFecha.trim(),
+          this.hastaFecha.trim(),
+          this.filtroEstado,
+          this.presentadapor // ✅ Añadir aquí
+        );
 
-      const result = await this.serviciolicitacion.getDatosPaginados(options);
-
-      if (result.data.length > 0) {
-        this.licitaciones = [...this.licitaciones, ...result.data];
-        this.lastVisibleDoc = result.lastVisible;
-      }
-
-      if (result.data.length < 10) {
+        this.licitaciones = hits;
         this.noMoreData = true;
+      } else {
+        const options: Opcionespaginacion = {
+          limitNumber: 10,
+          lastVisible: this.lastVisibleDoc,
+          busquedaCliente: this.busquedaCliente,
+          numExpediente: this.numExpediente,
+          desdeFecha: this.desdeFecha,
+          hastaFecha: this.hastaFecha,
+          adjudicadas: this.filtroEstado === 'ADJUDICADA',
+          presentadapor: this.presentadapor,
+          filterState: this.filtroEstado,
+        };
+
+        const result = await this.serviciolicitacion.getDatosPaginados(options);
+
+        if (result.data.length > 0) {
+          this.licitaciones = [...this.licitaciones, ...result.data];
+          this.lastVisibleDoc = result.lastVisible;
+        }
+
+        if (result.data.length < 10) {
+          this.noMoreData = true;
+        }
       }
+    } catch (error) {
+      console.error('❌ Error cargando datos:', error);
+    } finally {
+      this.isLoading = false;
+      if (event) event.target.complete();
     }
-  } catch (error) {
-    console.error('Error loading data:', error);
-  } finally {
-    this.isLoading = false;
-    if (event) event.target.complete();
   }
-}
 
   async eliminarLicitacion(firebaseId: string) {
+    console.log('Valor recibido para eliminar:', firebaseId);
     const alert = await this.alertController.create({
       header: 'Confirmar eliminación',
       message: '¿Estás seguro de eliminar esta licitación?',
@@ -166,18 +179,20 @@ export class ListarlicitacionesComponent implements OnInit {
           text: 'Eliminar',
           handler: async () => {
             try {
-              await this.serviciolicitacion.eliminarLicitacion(firebaseId); // Actualizar lista local
-              this.licitaciones = this.licitaciones.filter(
-                (lic) => lic.firebaseId !== firebaseId
-              ); // Mostrar confirmación
+              await this.serviciolicitacion.eliminarLicitacion(firebaseId);
+              // Actualiza la lista, usando firebaseId o objectID según corresponda
+              this.licitaciones = this.licitaciones.filter((lic) => {
+                const id = lic.firebaseId || lic.objectID || '';
+                return id !== firebaseId;
+              });
               const toast = await this.toastController.create({
                 message: 'Licitación eliminada correctamente',
                 duration: 2000,
                 color: 'success',
               });
-
               await toast.present();
             } catch (error) {
+              console.error('Error en el componente al eliminar:', error);
               const toast = await this.toastController.create({
                 message: 'Error al eliminar la licitación',
                 duration: 2000,
@@ -189,16 +204,19 @@ export class ListarlicitacionesComponent implements OnInit {
         },
       ],
     });
-
     await alert.present();
-  } // Abre modal para edición
+  }
+  // Abre modal para edición
 
   async abrirModalEdicion(licitacion: any) {
+    // Se determina el identificador utilizando solo firebaseId y objectID
+    const idParaEditar = licitacion.firebaseId || licitacion.objectID;
+
     const modal = await this.modalController.create({
       component: EditarlicitacionComponent,
       cssClass: 'custom-modal',
       componentProps: {
-        firebaseId: licitacion.firebaseId,
+        firebaseId: idParaEditar,
         licitacionCargada: licitacion,
       },
     });
@@ -207,16 +225,14 @@ export class ListarlicitacionesComponent implements OnInit {
     const { data } = await modal.onDidDismiss();
     if (data?.actualizado) {
       const index = this.licitaciones.findIndex(
-        (l) => l.firebaseId === licitacion.firebaseId
+        (l) => (l.firebaseId || l.objectID) === idParaEditar
       );
-
       if (index > -1) {
         this.licitaciones[index] = {
           ...this.licitaciones[index],
           ...data.nuevosDatos,
         };
       }
-
       const toast = await this.toastController.create({
         message: 'Cambios guardados correctamente',
         duration: 2000,
@@ -224,15 +240,32 @@ export class ListarlicitacionesComponent implements OnInit {
       });
       await toast.present();
     }
-  } // Cambiar estado (por select)
+  }
 
   cambiarEstado(
     licitacion: any,
     campo: 'estadoini' | 'estadofinal',
     nuevoValor: string
   ) {
+    // Detectar el identificador correcto: usar firebaseId si existe; si no, usar objectID
+    const licitacionId = licitacion.firebaseId ?? licitacion.objectID;
+    if (!licitacionId) {
+      console.error(
+        '❌ No se puede actualizar sin un ID válido en la licitación.'
+      );
+      // Si se desea, se puede mostrar un toast informando del error
+      this.toastController
+        .create({
+          message: 'Error al actualizar el estado: ID inválido',
+          duration: 2000,
+          color: 'danger',
+        })
+        .then((toast) => toast.present());
+      return;
+    }
+
     this.serviciolicitacion
-      .actualizarLicitacion(licitacion.firebaseId, { [campo]: nuevoValor })
+      .actualizarLicitacion({ firebaseid: licitacionId, [campo]: nuevoValor })
       .then(async () => {
         console.log(`Actualización de ${campo} exitosa`);
         const toast = await this.toastController.create({
@@ -249,7 +282,6 @@ export class ListarlicitacionesComponent implements OnInit {
           duration: 2000,
           color: 'danger',
         });
-
         toast.present();
       });
   } /**

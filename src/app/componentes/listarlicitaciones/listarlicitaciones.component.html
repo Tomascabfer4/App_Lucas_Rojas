@@ -182,7 +182,7 @@
               class="boton-personalizado"
               shape="round"
               color="danger"
-              (click)="eliminarLicitacion(licitacion.firebaseId)"
+              (click)="eliminarLicitacion(licitacion.firebaseId || licitacion.objectID)"
             >
               <ion-icon slot="start" name="trash-bin-sharp"></ion-icon>
               Eliminar

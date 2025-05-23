@@ -1,9 +1,12 @@
 import {
   Component,
   OnInit,
+  AfterViewInit,
+  OnDestroy,
+  ElementRef,
+  ViewChild,
   Output,
   EventEmitter,
-  ViewChild,
   Input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,6 +22,8 @@ import {
   IonSearchbar,
   IonChip,
   IonButton,
+  IonList,
+  IonContent,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { searchOutline } from 'ionicons/icons';
@@ -30,6 +35,7 @@ import { AlgoliaService } from 'src/app/servicios/algolia.service';
   styleUrls: ['./filtrarlicitaciones.component.scss'],
   standalone: true,
   imports: [
+    IonList,
     IonButton,
     IonChip,
     CommonModule,
@@ -44,7 +50,7 @@ import { AlgoliaService } from 'src/app/servicios/algolia.service';
     IonDatetime,
   ],
 })
-export class FiltrarlicitacionesComponent implements OnInit {
+export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() initialClienteFilter: string | null = null; // Puede ser string o null
 
   // Variables de búsqueda y fecha.
@@ -55,6 +61,13 @@ export class FiltrarlicitacionesComponent implements OnInit {
   hastaFechaControl: string = new Date().toISOString();
   hastaFecha: string = '';
 
+  // Propiedades para guardar las sugerencias
+  suggestions: any[] = [];
+  suggestionsNumExpediente: any[] = [];
+  // Estos objetos se usarán para posicionar de forma fija la lista de sugerencias
+  sugerenciasEstilo: any = {};
+  suggestionsNumExpedienteEstilo: any = {};
+
   // Output para emitir los filtros.
   @Output() filtrosChanged = new EventEmitter<any>();
 
@@ -62,48 +75,87 @@ export class FiltrarlicitacionesComponent implements OnInit {
   @ViewChild('desdeModal') desdeModal!: IonModal;
   @ViewChild('hastaModal') hastaModal!: IonModal;
 
+  // Referencia al searchbar del cliente (para obtener el elemento DOM)
+  @ViewChild('searchbarEl', { read: ElementRef }) searchbarElement!: ElementRef;
+  // Agregamos también una referencia para el searchbar de expediente.  
+  // Asegúrate de asignar en el HTML la propiedad #searchbarExpediente a dicho ion-searchbar.
+  @ViewChild('searchbarExpediente', { read: ElementRef }) searchbarExpedienteElement!: ElementRef;
+
+  // Propiedades para detectar el scroll en el contenedor padre
+  private parentScrollElement: any = null; // Elemento IonContent (la referencia del web component)
+  private parentScrollNativeElement: any = null; // Elemento nativo de scroll obtenido a través de getScrollElement()
+
+  // Guardamos las funciones bound para poder remover correctamente los listeners
+  private boundHandleParentScroll = this.handleParentScroll.bind(this);
+  private boundHandleClickOutside = this.handleClickOutside.bind(this);
+
   constructor(private algoliaService: AlgoliaService) {
     addIcons({ searchOutline });
   }
 
   ngOnInit() {
-    // >>> Aquí usamos el valor del Input si existe, ANTES de emitir los filtros iniciales
     if (this.initialClienteFilter) {
-      // Si recibimos un filtro inicial, lo asignamos a la variable local
-      // que está enlazada al input con ngModel.
       this.busquedaCliente = this.initialClienteFilter;
-      console.log(
-        'FiltrarlicitacionesComponent: Inicializando con cliente:',
-        this.busquedaCliente
-      );
-    } else {
-      // Si no hay filtro inicial, nos aseguramos de que la variable local esté vacía
-      this.busquedaCliente = ''; // Ya está por defecto, pero por claridad
+      console.log('FiltrarlicitacionesComponent: Inicializando con cliente:', this.busquedaCliente);
     }
-
     this.emitFilters();
   }
 
-  // Métodos para el modal "Desde Fecha"
+  async ngAfterViewInit() {
+    // Buscamos el contenedor scrollable padre (usualmente un <ion-content>)
+    this.parentScrollElement = this.searchbarElement.nativeElement.closest('ion-content');
+    if (this.parentScrollElement && this.parentScrollElement.getScrollElement) {
+      // getScrollElement() devuelve una promesa con el elemento nativo de scroll
+      this.parentScrollNativeElement = await this.parentScrollElement.getScrollElement();
+      if (this.parentScrollNativeElement) {
+        this.parentScrollNativeElement.addEventListener('scroll', this.boundHandleParentScroll);
+      }
+    }
+    // Listener para clicks fuera de cada searchbar
+    document.addEventListener('click', this.boundHandleClickOutside);
+  }
 
+  ngOnDestroy() {
+    if (this.parentScrollNativeElement) {
+      this.parentScrollNativeElement.removeEventListener('scroll', this.boundHandleParentScroll);
+    }
+    document.removeEventListener('click', this.boundHandleClickOutside);
+  }
+
+  private handleParentScroll(event: Event): void {
+    // Al hacer scroll en el contenedor padre, se cierran ambas listas de sugerencias.
+    this.suggestions = [];
+    this.suggestionsNumExpediente = [];
+  }
+
+  private handleClickOutside(event: MouseEvent): void {
+    // Se verifica si se hizo clic fuera de cada uno de los searchbars.
+    const clickedInsideCliente = this.searchbarElement.nativeElement.contains(event.target);
+    const clickedInsideExpediente = this.searchbarExpedienteElement.nativeElement.contains(event.target);
+    if (!clickedInsideCliente) {
+      this.suggestions = [];
+    }
+    if (!clickedInsideExpediente) {
+      this.suggestionsNumExpediente = [];
+    }
+  }
+
+  // Métodos para el modal "Desde Fecha"
   openDesdeModal(): void {
     this.desdeModal.present();
   }
 
   onDateScrollDesdeChange(event: any) {
-    // Solo almacenamos el valor a medida que el usuario hace scroll.
     this.desdeFechaControl = event.detail.value;
   }
 
   onApplyDesdeFecha(): void {
-    // Se asigna el valor final a la variable desdeFecha.
     this.desdeFecha = this.desdeFechaControl;
     this.closeDesdeModal();
     this.emitFilters();
   }
 
   onResetDesdeFecha(): void {
-    // Se vacía el filtro de fecha "Desde" y se emite el evento
     this.desdeFechaControl = '';
     this.desdeFecha = '';
     this.closeDesdeModal();
@@ -111,7 +163,6 @@ export class FiltrarlicitacionesComponent implements OnInit {
   }
 
   onCancelDesde(): void {
-    // Cierra el modal sin aplicar cambios.
     this.closeDesdeModal();
   }
 
@@ -119,7 +170,7 @@ export class FiltrarlicitacionesComponent implements OnInit {
     this.desdeModal.dismiss();
   }
 
-  // Métodos para el modal "Hasta Fecha" (ya implementados previamente)
+  // Métodos para el modal "Hasta Fecha"
   openHastaModal(): void {
     this.hastaModal.present();
   }
@@ -149,15 +200,91 @@ export class FiltrarlicitacionesComponent implements OnInit {
     this.hastaModal.dismiss();
   }
 
-  // Métodos para los searchbars y emisión de filtros
-
-  onClienteSearch(event: any) {
+  // Método para buscar sugerencias de cliente (ya existente)
+  async onClienteSearch(event: any) {
     this.busquedaCliente = event.detail.value;
+    this.emitFilters();
+
+    // Espera un ciclo para que Angular renderice el DOM y poder posicionar correctamente la lista
+    setTimeout(() => {
+      const el = this.searchbarElement?.nativeElement;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        this.sugerenciasEstilo = {
+          position: 'fixed',
+          top: `${rect.bottom + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`,
+          width: `${rect.width}px`,
+          zIndex: 9999,
+        };
+      }
+    }, 0);
+
+    if (this.busquedaCliente && this.busquedaCliente.trim().length > 1) {
+      try {
+        const sug = await this.algoliaService.getSuggestions(this.busquedaCliente);
+        this.suggestions = sug;
+      } catch (error) {
+        console.error('Error al obtener sugerencias:', error);
+        this.suggestions = [];
+      }
+    } else {
+      this.suggestions = [];
+    }
+  }
+
+  // Nuevo método para buscar sugerencias de número de expediente
+  async onNumExpedienteSearch(event: any) {
+    this.numExpediente = event.detail.value;
+    this.emitFilters();
+
+    // Se espera un ciclo para que Angular renderice el DOM y se pueda posicionar la lista de sugerencias
+    setTimeout(() => {
+      const el = this.searchbarExpedienteElement?.nativeElement;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        this.suggestionsNumExpedienteEstilo = {
+          position: 'fixed',
+          top: `${rect.bottom + window.scrollY}px`,
+          left: `${rect.left + window.scrollX}px`,
+          width: `${rect.width}px`,
+          zIndex: 9999,
+        };
+      }
+    }, 0);
+
+    if (this.numExpediente && this.numExpediente.trim().length > 1) {
+      try {
+        // Se asume que en el servicio dispone de un método para obtener sugerencias limitadas al atributo numexpediente.
+        const sug = await this.algoliaService.getSuggestions(this.numExpediente);
+        this.suggestionsNumExpediente = sug;
+      } catch (error) {
+        console.error('Error al obtener sugerencias de numexpediente:', error);
+        this.suggestionsNumExpediente = [];
+      }
+    } else {
+      this.suggestionsNumExpediente = [];
+    }
+  }
+
+  // Método para actualizar el valor del número de expediente sin mostrar sugerencias (si lo necesitas)
+  onNumExpedienteChange(event: any) {
+    this.numExpediente = event.detail.value;
     this.emitFilters();
   }
 
-  onNumExpedienteChange(event: any) {
-    this.numExpediente = event.detail.value;
+  // Método para seleccionar una sugerencia de cliente
+  selectSuggestion(suggestion: any) {
+    this.busquedaCliente = suggestion.cliente;
+    this.suggestions = [];
+    this.emitFilters();
+  }
+
+  // Método para seleccionar una sugerencia de número de expediente
+  selectNumExpedienteSuggestion(suggestion: any) {
+    // Se asume que el objeto suggestion tiene la propiedad "numexpediente"
+    this.numExpediente = suggestion.numexpediente;
+    this.suggestionsNumExpediente = [];
     this.emitFilters();
   }
 
@@ -168,22 +295,20 @@ export class FiltrarlicitacionesComponent implements OnInit {
       desdeFecha: this.desdeFecha,
       hastaFecha: this.hastaFecha,
     };
-    console.log(
-      'Emitiendo filtros desde FiltrarlicitacionesComponent:',
-      filtros
-    );
+    console.log('Emitiendo filtros desde FiltrarlicitacionesComponent:', filtros);
     this.filtrosChanged.emit(filtros);
   }
 
-  // >>> Método para limpiar todos los filtros y emitir
-   limpiarFiltros() {
-      this.busquedaCliente = '';
-      this.numExpediente = '';
-      this.desdeFechaControl = ''; // Limpia el control temporal del picker
-      this.desdeFecha = '';      // Limpia el filtro aplicado
-      this.hastaFechaControl = ''; // Limpia el control temporal del picker
-      this.hastaFecha = '';      // Limpia el filtro aplicado
-      this.emitFilters(); // Emite los filtros reseteados
-   }
-   
+  // Método para limpiar todos los filtros
+  limpiarFiltros() {
+    this.busquedaCliente = '';
+    this.numExpediente = '';
+    this.desdeFechaControl = '';
+    this.desdeFecha = '';
+    this.hastaFechaControl = '';
+    this.hastaFecha = '';
+    this.suggestions = [];
+    this.suggestionsNumExpediente = [];
+    this.emitFilters();
+  }
 }

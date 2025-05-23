@@ -14,17 +14,17 @@
           placeholder="Buscar por cliente"
           [(ngModel)]="busquedaCliente"
           (ionInput)="onClienteSearch($event)"
-        >
-        </ion-searchbar>
+          #searchbarEl
+        ></ion-searchbar>
 
         <!-- Número de Expediente -->
         <ion-searchbar
           class="rounded-search"
           placeholder="Buscar por expediente"
           [(ngModel)]="numExpediente"
-          (ionInput)="onNumExpedienteChange($event)"
-        >
-        </ion-searchbar>
+          (ionInput)="onNumExpedienteSearch($event)"
+          #searchbarExpediente
+        ></ion-searchbar>
 
         <!-- Desde Fecha -->
         <ion-item>
@@ -132,4 +132,36 @@
       </div>
     </div>
   </ion-accordion>
+
+  <!-- Lista de sugerencias para el cliente -->
+  <div
+    *ngIf="suggestions.length > 0"
+    class="sugerencias-list"
+    [ngStyle]="sugerenciasEstilo"
+  >
+    <ion-list>
+      <ion-item
+        *ngFor="let suggestion of suggestions"
+        (click)="selectSuggestion(suggestion)"
+      >
+        {{ suggestion.cliente }}
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <!-- Lista de sugerencias para el número de expediente -->
+  <div
+    *ngIf="suggestionsNumExpediente.length > 0"
+    class="sugerencias-list"
+    [ngStyle]="suggestionsNumExpedienteEstilo"
+  >
+    <ion-list>
+      <ion-item
+        *ngFor="let suggestion of suggestionsNumExpediente"
+        (click)="selectNumExpedienteSuggestion(suggestion)"
+      >
+        {{ suggestion.numexpediente }}
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-accordion-group>
