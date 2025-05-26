@@ -16,7 +16,7 @@
 <ion-content>
   
    <app-filtrarlicitaciones
-    [initialClienteFilter]="busquedaCliente" (filtrosChanged)="onFiltrosChanged($event)"
+    [initialClienteFilter]="busquedaCliente" [initialExpedienteFilter]="numExpediente" (filtrosChanged)="onFiltrosChanged($event)"
   ></app-filtrarlicitaciones>
 
   <app-listarlicitaciones

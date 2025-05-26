@@ -50,9 +50,11 @@ import { AlgoliaService } from 'src/app/servicios/algolia.service';
     IonDatetime,
   ],
 })
-export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FiltrarlicitacionesComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() initialClienteFilter: string | null = null; // Puede ser string o null
-
+  @Input() initialExpedienteFilter: string | null = null;
   // Variables de búsqueda y fecha.
   busquedaCliente: string = '';
   numExpediente: string = '';
@@ -77,9 +79,10 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
 
   // Referencia al searchbar del cliente (para obtener el elemento DOM)
   @ViewChild('searchbarEl', { read: ElementRef }) searchbarElement!: ElementRef;
-  // Agregamos también una referencia para el searchbar de expediente.  
+  // Agregamos también una referencia para el searchbar de expediente.
   // Asegúrate de asignar en el HTML la propiedad #searchbarExpediente a dicho ion-searchbar.
-  @ViewChild('searchbarExpediente', { read: ElementRef }) searchbarExpedienteElement!: ElementRef;
+  @ViewChild('searchbarExpediente', { read: ElementRef })
+  searchbarExpedienteElement!: ElementRef;
 
   // Propiedades para detectar el scroll en el contenedor padre
   private parentScrollElement: any = null; // Elemento IonContent (la referencia del web component)
@@ -96,19 +99,34 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
   ngOnInit() {
     if (this.initialClienteFilter) {
       this.busquedaCliente = this.initialClienteFilter;
-      console.log('FiltrarlicitacionesComponent: Inicializando con cliente:', this.busquedaCliente);
+      console.log(
+        'FiltrarlicitacionesComponent: Inicializando con cliente:',
+        this.busquedaCliente
+      );
+    }
+    if (this.initialExpedienteFilter) {
+      this.numExpediente = this.initialExpedienteFilter;
+      console.log(
+        'FiltrarlicitacionesComponent: Inicializando con expediente:',
+        this.numExpediente
+      );
     }
     this.emitFilters();
   }
 
   async ngAfterViewInit() {
     // Buscamos el contenedor scrollable padre (usualmente un <ion-content>)
-    this.parentScrollElement = this.searchbarElement.nativeElement.closest('ion-content');
+    this.parentScrollElement =
+      this.searchbarElement.nativeElement.closest('ion-content');
     if (this.parentScrollElement && this.parentScrollElement.getScrollElement) {
       // getScrollElement() devuelve una promesa con el elemento nativo de scroll
-      this.parentScrollNativeElement = await this.parentScrollElement.getScrollElement();
+      this.parentScrollNativeElement =
+        await this.parentScrollElement.getScrollElement();
       if (this.parentScrollNativeElement) {
-        this.parentScrollNativeElement.addEventListener('scroll', this.boundHandleParentScroll);
+        this.parentScrollNativeElement.addEventListener(
+          'scroll',
+          this.boundHandleParentScroll
+        );
       }
     }
     // Listener para clicks fuera de cada searchbar
@@ -117,7 +135,10 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
 
   ngOnDestroy() {
     if (this.parentScrollNativeElement) {
-      this.parentScrollNativeElement.removeEventListener('scroll', this.boundHandleParentScroll);
+      this.parentScrollNativeElement.removeEventListener(
+        'scroll',
+        this.boundHandleParentScroll
+      );
     }
     document.removeEventListener('click', this.boundHandleClickOutside);
   }
@@ -130,8 +151,11 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
 
   private handleClickOutside(event: MouseEvent): void {
     // Se verifica si se hizo clic fuera de cada uno de los searchbars.
-    const clickedInsideCliente = this.searchbarElement.nativeElement.contains(event.target);
-    const clickedInsideExpediente = this.searchbarExpedienteElement.nativeElement.contains(event.target);
+    const clickedInsideCliente = this.searchbarElement.nativeElement.contains(
+      event.target
+    );
+    const clickedInsideExpediente =
+      this.searchbarExpedienteElement.nativeElement.contains(event.target);
     if (!clickedInsideCliente) {
       this.suggestions = [];
     }
@@ -222,7 +246,9 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
 
     if (this.busquedaCliente && this.busquedaCliente.trim().length > 1) {
       try {
-        const sug = await this.algoliaService.getSuggestions(this.busquedaCliente);
+        const sug = await this.algoliaService.getSuggestions(
+          this.busquedaCliente
+        );
         this.suggestions = sug;
       } catch (error) {
         console.error('Error al obtener sugerencias:', error);
@@ -256,7 +282,9 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
     if (this.numExpediente && this.numExpediente.trim().length > 1) {
       try {
         // Se asume que en el servicio dispone de un método para obtener sugerencias limitadas al atributo numexpediente.
-        const sug = await this.algoliaService.getSuggestions(this.numExpediente);
+        const sug = await this.algoliaService.getSuggestions(
+          this.numExpediente
+        );
         this.suggestionsNumExpediente = sug;
       } catch (error) {
         console.error('Error al obtener sugerencias de numexpediente:', error);
@@ -295,7 +323,10 @@ export class FiltrarlicitacionesComponent implements OnInit, AfterViewInit, OnDe
       desdeFecha: this.desdeFecha,
       hastaFecha: this.hastaFecha,
     };
-    console.log('Emitiendo filtros desde FiltrarlicitacionesComponent:', filtros);
+    console.log(
+      'Emitiendo filtros desde FiltrarlicitacionesComponent:',
+      filtros
+    );
     this.filtrosChanged.emit(filtros);
   }
 

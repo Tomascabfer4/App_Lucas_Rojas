@@ -159,7 +159,7 @@
                         <tr
                           *ngFor="let lic of licitacionesFiltradas"
                           class="table-row clickable-row"
-                          (click)="goToTodasLicitaciones(lic.cliente)"
+                          (click)="goToTodasLicitaciones(lic.numexpediente, lic.cliente)"
                         >
                           <td>
                             {{ lic.presentadapor == null ? '(Nadie)' :
