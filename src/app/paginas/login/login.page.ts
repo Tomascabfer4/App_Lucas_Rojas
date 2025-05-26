@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AutenticacionService } from 'src/app/servicios/autenticacion.service';
 import { Router } from '@angular/router';
-import { IonInput, IonContent, IonButton, IonLabel, IonItem, ToastController, IonIcon } from '@ionic/angular/standalone';
+import { IonInput, IonContent, IonButton, IonLabel, IonItem, ToastController, IonIcon, IonCol, IonGrid, IonRow, IonCard, IonTitle, IonButtons, IonToolbar } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { person, lockClosed } from 'ionicons/icons';
 
@@ -13,7 +13,7 @@ import { person, lockClosed } from 'ionicons/icons';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonIcon, IonInput, IonItem, IonButton, IonContent, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [IonToolbar, IonButtons, IonTitle, IonCard, IonRow, IonGrid, IonCol, IonIcon, IonInput, IonItem, IonButton, IonContent, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginPage {
 

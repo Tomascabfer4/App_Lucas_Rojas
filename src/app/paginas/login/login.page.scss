@@ -271,14 +271,53 @@
   }
 }
 @media (max-width: 768px) {
+  /* 1) Apilamos contenedores */
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: visible; /* para que la imagen sobresalga */
+  }
+
+  /* 2) Hero gana espacio abajo para “cabe” la mitad de la imagen */
+  .left-section {
+    order: 1;
+    clip-path: none !important;
+    justify-content: center;  /* centra en vertical */
+    align-items: center;  
+    /* Ajusta esto al doble de la mitad de la altura de tu imagen */
+    position: relative;    /* contenedor relativo para la imagen absoluta */
+  }
+
+  /* 3) Imagen ahora está absoluta dentro de left-section */
   .image-empresa {
+    order: 2;                    /* la coloca tras .left-section */
+    margin: -26rem auto 1rem;     /* sube la imagen 6rem para solaparla */
+    width: 95% !important;
+    max-width: 400px !important;
     position: relative !important;
-    left: auto !important;
     transform: none !important;
-    bottom: auto !important;
-    margin: 1rem auto 0;     /* espacia desde el contenido */
+    animation: levitate 3s ease-in-out infinite;
+    left: 2%;
+  }
+
+  .left-message{
+    margin-left: 10%;
+  }
+
+  /* 4) Tu login sale después, con margen para no taparse con la imagen */
+  .right-section {
+    order: 3;
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 1.5rem;
+    margin-top: 1.5rem;       /* Igual a la mitad de la altura de la imagen */
+    background: #fff;
+    overflow-y: auto;
+  }
+
+  /* 5) Asegúrate de que los blobs sigan ahí */
+  .left-section .blob-container {
     display: block;
-    width: 80%;              /* ocupa el 80% del ancho móvil */
-    max-width: 300px;        /* limite superior en móvil */
   }
 }
