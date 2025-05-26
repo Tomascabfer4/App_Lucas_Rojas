@@ -283,8 +283,7 @@
   .left-section {
     order: 1;
     clip-path: none !important;
-    justify-content: center;  /* centra en vertical */
-    align-items: center;  
+    padding-bottom: 16rem !important; 
     /* Ajusta esto al doble de la mitad de la altura de tu imagen */
     position: relative;    /* contenedor relativo para la imagen absoluta */
   }
@@ -303,6 +302,8 @@
 
   .left-message{
     margin-left: 10%;
+    position: relative !important;    /* para poder usar margin */
+    margin-bottom: 4rem !important;   /* espacio extra antes de la imagen */
   }
 
   /* 4) Tu login sale después, con margen para no taparse con la imagen */
