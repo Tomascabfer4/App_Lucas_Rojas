@@ -13,7 +13,74 @@
     <ion-row>
       <!-- IZQUIERDA: botones + contadores -->
       <ion-col size="12" sizeMd="8.5">
-        <!-- fila de botones -->
+        <!-- fila de botones (sin cambios) -->
+        <!-- ————— BLOQUE: ESTADÍSTICAS AÑO ANTERIOR ————— -->
+        <ion-card class="card-stats-anterior">
+          <ion-card-header>
+            <ion-card-title>Año {{ anioAnteriorFiltro }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="stats-container">
+              <div
+                *ngFor="let stat of statsResumenAnterior"
+                [ngStyle]="{'border-color': stat.color}"
+                class="stat-box"
+              >
+                <div [style.color]="stat.color" class="stat-value">
+                  {{ stat.value }}
+                </div>
+                <div class="stat-label">{{ stat.label }}</div>
+                <div class="stat-percent">{{ stat.percent }}% </div>
+                 <div
+                  *ngIf="stat.label === 'Adjudicadas'"
+                  class="stat-percent"
+                >
+                  {{ stat.sumImporte | number:'1.2-2' }} €
+                  <!-- Pipe number para formatear con 2 decimales -->
+                </div>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <!-- —————————————————————————————————————— -->
+
+        <!-- ————— BLOQUE: ESTADÍSTICAS AÑO EN CURSO ————— -->
+        <ion-card class="card-stats">
+          <ion-card-header>
+            <ion-card-title>Año {{ anioFiltro }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="stats-container">
+              <div
+                *ngFor="let stat of statsResumen"
+                [ngStyle]="{'border-color': stat.color}"
+                class="stat-box"
+              >
+                <!-- Valor numérico (cantidad de licitaciones) -->
+                <div [style.color]="stat.color" class="stat-value">
+                  {{ stat.value }}
+                </div>
+
+                <!-- Etiqueta (por ejemplo: "Adjudicadas") -->
+                <div class="stat-label">{{ stat.label }}</div>
+                <div class="stat-percent">{{ stat.percent }}% </div>
+                <!-- NUEVO: si este stat es "Adjudicadas", mostramos la suma de importes -->
+                <div
+                  *ngIf="stat.label === 'Adjudicadas'"
+                  class="stat-percent"
+                >
+                  {{ stat.sumImporte | number:'1.2-2' }} €
+                  <!-- Pipe number para formatear con 2 decimales -->
+                </div>
+              </div>
+            </div>
+          </ion-card-content>
+        </ion-card>
+        <!-- ———————————————————————————————— -->
+      </ion-col>
+
+      <!-- DERECHA: logo -->
+      <ion-col size="12" sizeMd="3.5">
         <div class="buttons-row">
           <ion-button class="boton-izquierdo" (click)="abrirLicitadores()">
             <div class="btn-content">
@@ -28,53 +95,25 @@
             </div>
           </ion-button>
         </div>
-        <!-- contadores justo debajo -->
-        <ion-card class="card-stats">
-          <ion-card-content>
-            <div class="stats-container">
-              <div
-                *ngFor="let stat of statsResumen"
-                [ngStyle]="{'border-color': stat.color}"
-                class="stat-box"
-              >
-                <div [style.color]="stat.color" class="stat-value">
-                  {{ stat.value }}
-                </div>
-                <div class="stat-label">{{ stat.label }}</div>
-                <div class="stat-percent">{{ stat.percent }}%</div>
-              </div>
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-      <!-- DERECHA: logo -->
-      <ion-col size="12" sizeMd="3.5">
-        <ion-card>
-          <ion-card-content class="ion-text-center">
-            <img src="assets/imagenes/logo.png" height="140" />
-          </ion-card-content>
-        </ion-card>
       </ion-col>
     </ion-row>
 
-    <!-- Row 3: Fila inferior con la tabla y el gráfico pegados al bottom -->
+    <!-- Row con tabla + gráfico (sin cambios en esta parte) -->
     <ion-row>
       <!-- Card del listado (Filtros + Tabla) -->
       <ion-col size="12" sizeMd="8.5">
         <ion-card>
           <ion-card-header>
             <ion-card-title>
-              <strong>{{ mostrarTituloListado() }}</strong></ion-card-title
-            >
+              <strong>{{ mostrarTituloListado() }}</strong>
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <ion-grid>
               <ion-row>
-                <!-- Columna de Filtros -->
+                <!-- Filtros -->
                 <ion-col size="12" sizeMd="3.5">
                   <div class="filters-container">
-                    <!-- Acordeón para "Presentado Por" -->
                     <ion-accordion-group>
                       <ion-accordion value="presentador">
                         <ion-item slot="header" color="light">
@@ -85,7 +124,9 @@
                             <ion-item *ngFor="let p of presentadores">
                               <ion-checkbox
                                 slot="start"
-                                [checked]="servicioEstadisticas.presentadoresSeleccionados.includes(p)"
+                                [checked]="
+                                  servicioEstadisticas.presentadoresSeleccionados.includes(p)
+                                "
                                 (ionChange)="togglePresentadador(p, $event)"
                               >
                               </ion-checkbox>
@@ -103,7 +144,9 @@
                             <ion-item *ngFor="let e of estadosFinales">
                               <ion-checkbox
                                 slot="start"
-                                [checked]="servicioEstadisticas.estadosFinalesSeleccionados.includes(e)"
+                                [checked]="
+                                  servicioEstadisticas.estadosFinalesSeleccionados.includes(e)
+                                "
                                 (ionChange)="toggleEstadoFinal(e, $event)"
                               >
                               </ion-checkbox>
@@ -114,7 +157,6 @@
                       </ion-accordion>
                     </ion-accordion-group>
 
-                    <!-- Filtros de rango de fechas (modales) -->
                     <ion-item>
                       <ion-label><strong>Desde Fecha</strong></ion-label>
                       <ion-chip (click)="openDesdeModal()">
@@ -131,7 +173,6 @@
                         'Seleccionar' }}
                       </ion-chip>
                     </ion-item>
-                    <!-- Botón para limpiar filtros -->
                     <ion-button
                       fill="outline"
                       expand="block"
@@ -142,7 +183,7 @@
                   </div>
                 </ion-col>
 
-                <!-- Columna de la Tabla -->
+                <!-- Tabla -->
                 <ion-col size="12" sizeMd="8.5">
                   <div class="table-container">
                     <table class="rounded-table">
@@ -168,11 +209,11 @@
                           <td>{{ lic.cliente }}</td>
                           <td>{{ lic.importe }} €</td>
                           <td>
-                            {{ lic.estadofinal == null ?
-                            'Sin estado final' : lic.estadofinal }}
+                            {{ lic.estadofinal == null ? 'Sin estado final' :
+                            lic.estadofinal }}
                           </td>
                           <td>
-                            {{ lic.fechapresentacion | date:'mediumDate' }}
+                            {{ lic.fechapresentacion | date: 'mediumDate' }}
                           </td>
                         </tr>
                       </tbody>
@@ -185,7 +226,7 @@
         </ion-card>
       </ion-col>
 
-      <!-- Card del gráfico -->
+      <!-- Card del gráfico (solo muestra datos de licitacionesFiltradas) -->
       <ion-col size="12" sizeMd="3.5">
         <ion-card>
           <ion-card-content>
@@ -207,7 +248,7 @@
     </ion-row>
   </ion-grid>
 
-  <!-- Modales para selección de fecha -->
+  <!-- Modales de selección de fecha (sin cambios) -->
   <ion-modal #desdeModal [keepContentsMounted]="true" class="custom-modal">
     <ng-template>
       <ion-datetime
@@ -215,8 +256,7 @@
         displayFormat="d MMM y"
         max="2100-12-31"
         [(ngModel)]="fechaDesdeTemp"
-      >
-      </ion-datetime>
+      ></ion-datetime>
       <div class="modal-buttons">
         <ion-button
           expand="block"
@@ -250,8 +290,7 @@
         displayFormat="d MMM y"
         max="2100-12-31"
         [(ngModel)]="fechaHastaTemp"
-      >
-      </ion-datetime>
+      ></ion-datetime>
       <div class="modal-buttons">
         <ion-button
           expand="block"
@@ -278,7 +317,7 @@
     </ng-template>
   </ion-modal>
 
-  <!-- Superposicion de Licitadores -->
+  <!-- Superposición de Licitadores y Fianzas (sin cambios) -->
   <div
     *ngIf="verLicitadoresSuperposicion"
     class="full-overlay"
@@ -288,17 +327,13 @@
       [licitaciones]="licitacionesFiltradas"
       [presentadores]="presentadores"
       (cerrar)="cerrarLicitadores()"
-    >
-    </app-licitadores-estadisticas>
+    ></app-licitadores-estadisticas>
   </div>
-
-  <!--  Superposicion de Contratos -->
   <div
     *ngIf="verContratosSuperposicion"
     class="full-overlay"
     [class.closing]="isClosing"
   >
-    <!-- aquí el componente correcto -->
     <app-fianzas-estadisticas
       [licitaciones]="licitaciones"
       (cerrar)="cerrarContratos()"

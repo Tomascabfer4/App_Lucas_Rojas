@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { EstadisticasService } from './estadisticas.service';
-import { Licitacion } from '../interfaces/licitacion';
 
 @Injectable({ providedIn: 'root' })
 export class NotificacionesService {

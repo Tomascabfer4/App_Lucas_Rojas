@@ -7,48 +7,51 @@ import { LicitacionesService } from './licitaciones.service';
 })
 export class AlgoliaService {
   private client = liteClient('RF5U65QR0Z', '38733992848bd0ec64ab3643b1422a87');
+
   constructor(private serviciolicitacion: LicitacionesService) {}
 
-  // Metodo que busca en Algolia por cliente y expediente y de forma combinada
+  /**
+   * Busca en Algolia por cliente y expediente, combinando con filtros de Firebase.
+   * Añade paginación Algolia con page y hitsPerPage.
+   */
   async searchCombinado(
     busquedaCliente: string = '',
     numexpediente: string = '',
     desdeFecha?: string,
     hastaFecha?: string,
     filtroEstado?: string,
-    presentadapor?: string // <== NUEVO
+    presentadapor?: string,
+    page: number = 0,
+    hitsPerPage: number = 10
   ): Promise<any[]> {
     try {
       // 1. Obtener registros filtrados por fecha, estado y presentadapor desde Firebase
-      const registrosFiltradosPorFecha =
-        await this.serviciolicitacion.getDatosFiltrados(
-          desdeFecha,
-          hastaFecha,
-          filtroEstado,
-          presentadapor // <== PASAR presentadapor aquí
-        );
+      const registros = await this.serviciolicitacion.getDatosFiltrados(
+        desdeFecha,
+        hastaFecha,
+        filtroEstado,
+        presentadapor
+      );
 
-      if (!registrosFiltradosPorFecha.length) {
+      if (registros.length === 0) {
         return [];
       }
 
-      const idsFiltrados = registrosFiltradosPorFecha.map(
-        (doc) => doc.firebaseId
-      );
-
+      const idsFiltrados = registros.map(doc => doc.firebaseId);
       const query = [busquedaCliente, numexpediente].filter(Boolean).join(' ');
 
-      // 🔍 4. Filtro de IDs para limitar Algolia solo a lo que filtró Firebase
+      // Preparar filtros de objectID
       let filters = '';
       if (idsFiltrados.length) {
         filters = `objectID:${idsFiltrados.join(' OR objectID:')}`;
       }
 
-      const paramsArr = [
-        'hitsPerPage=10',
-        'queryType=prefixAll',
-        'restrictSearchableAttributes=cliente,numexpediente,estadofinal,estadoini,presentadapor', // <== Añadir presentadapor
-      ];
+      // Construir parámetros de búsqueda
+      const paramsArr: string[] = [];
+      paramsArr.push(`queryType=prefixAll`);
+      paramsArr.push(`restrictSearchableAttributes=cliente,numexpediente,estadofinal,estadoini,presentadapor`);
+      paramsArr.push(`hitsPerPage=${hitsPerPage}`);
+      paramsArr.push(`page=${page}`);
       if (filters) {
         paramsArr.push(`filters=${filters}`);
       }
@@ -71,29 +74,24 @@ export class AlgoliaService {
     }
   }
 
-  // Nuevo método para obtener suggestions
+  /**
+   * Obtiene sugerencias de cliente o expediente.
+   */
   async getSuggestions(query: string = ''): Promise<any[]> {
     try {
-      // Si no hay nada escrito, devolvemos un array vacío
-      if (!query.trim()) {
-        return [];
-      }
-      
-      // Parámetros para sugerencias: se busca obtener pocos resultados (por ejemplo, 5) 
-      // y se limita la búsqueda a los atributos que consideres relevantes.
-      const paramsArrSuggestion = [
+      if (!query.trim()) return [];
+      const params = [
         'hitsPerPage=5',
         'queryType=prefixAll',
         'restrictSearchableAttributes=cliente,numexpediente'
-      ];
-      const paramsSuggestion = paramsArrSuggestion.join('&');
+      ].join('&');
 
       const { results } = await this.client.search({
         requests: [
           {
-            indexName: 'Licitaciones_Algolia', // Puedes usar el mismo índice o, si lo prefieres, separar sugerencias en otro índice.
+            indexName: 'Licitaciones_Algolia',
             query,
-            params: paramsSuggestion,
+            params,
           },
         ],
       });
@@ -104,5 +102,4 @@ export class AlgoliaService {
       throw error;
     }
   }
-
 }

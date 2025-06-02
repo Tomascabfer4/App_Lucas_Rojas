@@ -13,7 +13,7 @@ import { person, lockClosed } from 'ionicons/icons';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonToolbar, IonButtons, IonTitle, IonCard, IonRow, IonGrid, IonCol, IonIcon, IonInput, IonItem, IonButton, IonContent, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [ IonIcon, IonInput, IonItem, IonButton, IonContent, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class LoginPage {
 

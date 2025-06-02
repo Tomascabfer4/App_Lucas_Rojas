@@ -131,14 +131,15 @@ ion-accordion-group {
 .stats-container {
   display: flex;
   flex-direction: row;          /* Los elementos se organizan en una fila */
-  gap: 10px;                    /* Espaciado entre los items */
+  gap: 15px;                    /* Espaciado entre los items */
   justify-content: space-around; /* Distribuye los elementos uniformemente */
   align-items: center;          /* Alinea verticalmente los items */
-  margin: -10px
+  
 }
 
 /* Cada stat-box dentro del card */
 .stat-box {
+  height: 90px;                /* Altura fija para cada stat-box */
   display: flex;
   flex-direction: column;       /* Asegura que los elementos dentro de cada stat-box estén alineados en columna */
   align-items: center;          /* Centra el contenido de cada caja */
@@ -170,11 +171,18 @@ ion-accordion-group {
   font-weight: bold;
   margin-bottom: -5px;
 }
-.card-stats {
+.card-stats, .card-stats-anterior {
   /* que el alto sea el que necesiten sus contenidos */
   height: auto !important;
-  padding: 0.8rem;         /* un poco de espacio interior */ 
+        /* un poco de espacio interior */ 
+}
+
+.card-stats {
   margin-bottom: -8px;
+}
+
+.card-stats-anterior {
+  margin-bottom: 8px;
 }
 
 /*****************************************
@@ -332,70 +340,71 @@ ion-chip {
 }
 
 
-/* 1) Contenedor que hace que los botones queden uno al lado del otro */
+/* 1) Contenedor que apila los botones en columna y centra su contenido */
 .buttons-row {
   display: flex;
-  justify-content: space-between; /* Alinea los botones a los extremos */
+  flex-direction: column;
+  gap: 1rem;            /* Espacio vertical entre cada botón */
+  align-items: stretch; /* Cada botón ocupa todo el ancho del contenedor */
+  margin-top: 10px;   /* (opcional) algo de espacio arriba / abajo */
+  margin-bottom: -10px; 
+  margin-right: 20px;
 }
 
+/* 2) Hacemos que cada ion-button tenga:
+     - el mismo border-radius que tus ion-card (10px)
+     - el mismo ancho (100 % del contenedor .buttons-row)
+     - una altura igual o muy parecida a la de los card-stats
+     - sin márgenes laterales extra */
 .buttons-row ion-button {
-  flex: 1; /* Haz que cada botón ocupe el mismo espacio */
-  margin: 0 5px; /* Asegúrate de que haya espacio entre ellos */
-}
-
-/* Ajustes en el estilo base del botón */
-
-.boton-derecho {
-  margin-right: 10px !important;
-  --border-radius: 10px !important;
-  display: flex !important;
+  width: 100%;                /* Ahora llena exactamente toda la columna */
+  min-height: 100px;          /* Ajusta “120px” para que coincida con la altura de tu gráfico */
+  --border-radius: 10px !important; /* Mismo border-radius que los ion-card */
+  margin: 0;                  /* Sin márgenes que “roben” ancho */
   --background: var(--ion-color-light);
   --color: var(--ion-color-secondary);
-  margin-top: 10px !important;
+  display: flex !important;
   justify-content: flex-start !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-transform: none;
+  box-sizing: border-box;     /* Importante: que padding/border no afecten el ancho total */
 }
 
-
-.boton-izquierdo {
+/* 3) Si tenías reglas específicas en .boton-izquierdo o .boton-derecho para margenes,
+     elimínalas o déjalas vacías para que no sobreescriban lo anterior. Por ejemplo: */
+.boton-derecho, .boton-izquierdo {
   margin-left: 10px !important;
-  --border-radius: 10px !important;
-  display: flex !important;
-  --background: var(--ion-color-light);
-  --color: var(--ion-color-secondary);
-  margin-top: 10px !important;
-  justify-content: flex-start !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  text-transform: none;
+  /* Ya no hace falta margin-top ni margin-left/right aquí */
+}
+.boton-derecho{
+  margin-top: -5px !important;
 }
 
-/* Ajustes en el contenido del botón */
+/* 4) El contenido interno (imagen + texto) puede quedar igual, 
+     solo controlamos verticalmente el montón de botones y su tamaño. */
 ion-button .btn-content {
   display: flex;
   align-items: center;
   gap: 6px;
   justify-content: flex-start;
-  margin: 0; /* eliminar margen superior e inferior */
-  margin-right: 10%;
+  margin: 0; 
+  
 }
 
-ion-button .btn-contentDerecho {
-  margin-right: 20%;
-}
 
-/* Estilos para la imagen */
 ion-button .btn-content img {
-  width: 60px;
+  width: 142px;
   height: auto;
-  margin: 0; /* eliminar márgenes alrededor de la imagen */
+  
 }
 
 /* Estilos para el texto */
 ion-button .btn-content span {
-  font-size: 180%;
-  margin-top: 22px;
+  font-size: 200%;
   font-weight: 1000;
+  display: inline-block;
+  text-align: left;
+
 }
 
 /* 7) Hover */

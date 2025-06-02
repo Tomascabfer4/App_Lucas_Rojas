@@ -24,10 +24,10 @@ import { createSharp, folderOpenSharp, trashBinSharp } from 'ionicons/icons';
 import { AlertController, ToastController } from '@ionic/angular/standalone';
 import { ModalController } from '@ionic/angular/standalone';
 import { LicitacionesService } from 'src/app/servicios/licitaciones.service';
+import { AlgoliaService } from 'src/app/servicios/algolia.service';
 import { EditarlicitacionComponent } from 'src/app/componentes/editarlicitacion/editarlicitacion.component';
 import { Opcionespaginacion } from 'src/app/interfaces/opcionespaginacion';
 import { ConstantesService } from 'src/app/servicios/constantes.service';
-import { AlgoliaService } from 'src/app/servicios/algolia.service';
 
 @Component({
   selector: 'app-listarlicitaciones',
@@ -35,139 +35,122 @@ import { AlgoliaService } from 'src/app/servicios/algolia.service';
   styleUrls: ['./listarlicitaciones.component.scss'],
   standalone: true,
   imports: [
-    IonSelect,
-    IonSelectOption,
-    IonInfiniteScrollContent,
-    IonButton,
-    IonIcon,
-    IonInfiniteScroll,
-    IonSpinner,
-    IonItem,
-    IonLabel,
-    IonItemDivider,
-    IonItemGroup,
-    IonCol,
-    IonRow,
-    IonCard,
-    CommonModule,
-    FormsModule,
+    IonSelect, IonSelectOption, IonInfiniteScrollContent, IonButton,
+    IonIcon, IonInfiniteScroll, IonSpinner, IonItem, IonLabel,
+    IonItemDivider, IonItemGroup, IonCol, IonRow, IonCard,
+    CommonModule, FormsModule
   ],
 })
 export class ListarlicitacionesComponent implements OnInit {
-  // En este caso, las constantes dinámicas se cargarán desde el servicio
   estadosIniciales: string[] = [];
-  estadosFinales: string[] = []; // Variables de entrada para filtros
-  @Input() busquedaCliente: string = '';
-  @Input() numExpediente: string = '';
-  @Input() desdeFecha: string = '';
-  @Input() hastaFecha: string = '';
-  @Input() presentadapor: string = ''; // Variable para filtro de estado (por ejemplo, para filtrar adjudicadas)
-  @Input() filtroEstado: string = 'todas';
+  estadosFinales: string[] = [];
+
+  @Input() busquedaCliente = '';
+  @Input() numExpediente = '';
+  @Input() desdeFecha = '';
+  @Input() hastaFecha = '';
+  @Input() presentadapor = '';
+  @Input() filtroEstado = 'todas';
 
   licitaciones: any[] = [];
   lastVisibleDoc: DocumentSnapshot | null = null;
-  noMoreData: boolean = false;
-  isLoading: boolean = false;
+  noMoreData = false;
+  isLoading = false;
+
+  allAlgoliaHits: any[] = []; 
+  algoliaPage = 0;
+  readonly pageSize = 10;
 
   constructor(
     private serviciolicitacion: LicitacionesService,
+    private algoliaService: AlgoliaService,
     private alertController: AlertController,
     private toastController: ToastController,
     private modalController: ModalController,
-    private constantesService: ConstantesService,
-    private algoliaService: AlgoliaService // Inyección del servicio de constantes
+    private constantesService: ConstantesService
   ) {
     addIcons({ folderOpenSharp, createSharp, trashBinSharp });
   }
 
   async ngOnInit() {
-    // Cargar las constantes dinámicamente desde Firestore
-
     try {
-      const config = await this.constantesService.getConstantes(); // Aquí asignamos los arrays que usaremos en los selects, p. ej. para filtrar estados
-      this.estadosIniciales = config.ESTADOS_INICIALES;
-      this.estadosFinales = config.ESTADOS_FINALES;
-    } catch (error) {
-      console.error('Error al cargar las constantes:', error);
-    } //await this.cargarLicitaciones();
+      const cfg = await this.constantesService.getConstantes();
+      this.estadosIniciales = cfg.ESTADOS_INICIALES;
+      this.estadosFinales = cfg.ESTADOS_FINALES;
+    } catch (e) {
+      console.error('Error cargando constantes', e);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Si alguno de los filtros cambia, reinicia la lista y la paginación
-
-    if (
-      changes['busquedaCliente'] ||
-      changes['numExpediente'] ||
-      changes['desdeFecha'] ||
-      changes['hastaFecha'] ||
-      changes['presentadapor'] ||
-      changes['filtroEstado']
-    ) {
-      this.licitaciones = [];
-      this.lastVisibleDoc = null;
-      this.noMoreData = false;
+    if (changes['busquedaCliente'] || changes['numExpediente'] ||
+        changes['desdeFecha'] || changes['hastaFecha'] ||
+        changes['presentadapor'] || changes['filtroEstado']) {
+      this.resetPagination();
       this.cargarLicitaciones();
     }
-  } // Utiliza la función del servicio para cargar licitaciones de 10 en 10.
+  }
 
+  private resetPagination() {
+    this.licitaciones = [];
+    this.allAlgoliaHits = [];
+    this.lastVisibleDoc = null;
+    this.noMoreData = false;
+    this.algoliaPage = 0;
+  }
+
+  /**
+   * Ajusta service.searchCombinado para recibir page y pageSize:
+   * async searchCombinado(cliente, expediente, desde, hasta, estado, presentadapor, page = 0, hitsPerPage = 10)
+   */
   async cargarLicitaciones(event?: any) {
     if (this.isLoading || this.noMoreData) return;
     this.isLoading = true;
-
     try {
-      const hayFiltrosAlgolia =
-        this.busquedaCliente.trim() || this.numExpediente.trim();
+      const hasTextFilter = this.busquedaCliente.trim() !== '' ||
+                            this.numExpediente.trim() !== '';
 
-      if (
-        hayFiltrosAlgolia ||
-        this.desdeFecha.trim() ||
-        this.hastaFecha.trim()
-      ) {
-        // Uso de Firebase para filtrar por fechas y Algolia para búsqueda rápida,
-        // ahora incluyendo el filtro de estado.
+      if (hasTextFilter) {
+        // Paginación vía Algolia
         const hits = await this.algoliaService.searchCombinado(
           this.busquedaCliente.trim(),
           this.numExpediente.trim(),
           this.desdeFecha.trim(),
           this.hastaFecha.trim(),
           this.filtroEstado,
-          this.presentadapor // ✅ Añadir aquí
+          this.presentadapor,
+          this.algoliaPage,
+          this.pageSize
         );
-
-        this.licitaciones = hits;
-        this.noMoreData = true;
+        this.licitaciones.push(...hits);
+        if (hits.length < this.pageSize) this.noMoreData = true;
+        this.algoliaPage++;
       } else {
-        const options: Opcionespaginacion = {
-          limitNumber: 10,
+        // Paginación vía Firestore para filtros sin texto
+        const opts: Opcionespaginacion = {
+          limitNumber: this.pageSize,
           lastVisible: this.lastVisibleDoc,
-          busquedaCliente: this.busquedaCliente,
-          numExpediente: this.numExpediente,
-          desdeFecha: this.desdeFecha,
-          hastaFecha: this.hastaFecha,
+          busquedaCliente: this.busquedaCliente.trim(),
+          numExpediente: this.numExpediente.trim(),
+          desdeFecha: this.desdeFecha.trim(),
+          hastaFecha: this.hastaFecha.trim(),
           adjudicadas: this.filtroEstado === 'ADJUDICADA',
-          presentadapor: this.presentadapor,
+          presentadapor: this.presentadapor.trim(),
           filterState: this.filtroEstado,
         };
-
-        const result = await this.serviciolicitacion.getDatosPaginados(options);
-
-        if (result.data.length > 0) {
-          this.licitaciones = [...this.licitaciones, ...result.data];
-          this.lastVisibleDoc = result.lastVisible;
-        }
-
-        if (result.data.length < 10) {
-          this.noMoreData = true;
-        }
+        const res = await this.serviciolicitacion.getDatosPaginados(opts);
+        this.licitaciones.push(...res.data);
+        this.lastVisibleDoc = res.lastVisible;
+        if (res.data.length < this.pageSize) this.noMoreData = true;
       }
-    } catch (error) {
-      console.error('❌ Error cargando datos:', error);
+    } catch (err) {
+      console.error('❌ Error cargando licitaciones:', err);
     } finally {
       this.isLoading = false;
       if (event) event.target.complete();
     }
   }
-
+ 
   async eliminarLicitacion(firebaseId: string) {
     console.log('Valor recibido para eliminar:', firebaseId);
     const alert = await this.alertController.create({

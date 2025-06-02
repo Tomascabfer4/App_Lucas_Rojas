@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, getDoc, setDoc } from '@angular/fire/firestore';
-import { Licitacion } from '../interfaces/licitacion';
 import { Constantes } from '../interfaces/constantes'; // Asegúrate de tener definida esta interfaz
 
 @Injectable({
