@@ -122,3 +122,31 @@ ion-card {
     --padding-start: 0;
     --padding-end: 0;
 }
+
+/* ==============================
+   Aumentar fuente en encabezados de tabla
+   ============================== */
+.rounded-table thead th {
+  font-size: 1.1rem; /* antes 1rem, ahora más grande */
+}
+
+/* ==============================
+   Aumentar fuente en celdas de tabla
+   ============================== */
+.rounded-table tbody td {
+  font-size: 1.05rem; /* antes 0.95rem, ahora un poco más grande */
+}
+
+/* ==============================
+   Opcional: también aumentar el título del card
+   ============================== */
+ion-card-title {
+  font-size: 1.3rem; /* antes 1.2rem, un poco más grande */
+}
+
+/* ==============================
+   Opcional: aumentar fuente en chips (presentadores/años)
+   ============================== */
+.removed-chips-header ion-chip {
+  font-size: 1rem; /* antes 0.9rem, ahora un poco más grande */
+}

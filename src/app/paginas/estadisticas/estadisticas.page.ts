@@ -528,85 +528,84 @@ export class EstadisticasPage implements OnInit {
   // NUEVO MÉTODO: calcula statsResumenAnterior usando licitacionesFiltradasAnterior
   // =======================================================================
   // --------------------------------------------------------------------------
-// MÉTODO PARA CALCULAR LAS ESTADÍSTICAS DEL AÑO ANTERIOR, INCLUIDA LA SUMA
-// --------------------------------------------------------------------------
-filtradoContadoresEstadosAnterior(): void {
-  const totalAnt = this.licitacionesFiltradasAnterior.length;
-  const totalSafeAnt = totalAnt || 1; // para evitar división por cero
+  // MÉTODO PARA CALCULAR LAS ESTADÍSTICAS DEL AÑO ANTERIOR, INCLUIDA LA SUMA
+  // --------------------------------------------------------------------------
+  filtradoContadoresEstadosAnterior(): void {
+    const totalAnt = this.licitacionesFiltradasAnterior.length;
+    const totalSafeAnt = totalAnt || 1; // para evitar división por cero
 
-  // Contar estados para el año anterior
-  const presentadasAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadoini === 'PRESENTADA'
-  ).length;
-  const enEstudioAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadoini === 'EN ESTUDIO'
-  ).length;
-  const adjudicadasAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadofinal === 'ADJUDICADA'
-  ).length;
-  const noAdjudicadasAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadofinal === 'NO ADJUDICADA'
-  ).length;
-  const enResolucionAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadofinal === 'EN ESPERA RESOLUCIÓN'
-  ).length;
-  const desestimadasAnt = this.licitacionesFiltradasAnterior.filter(
-    (lic) => lic.estadofinal === 'DESESTIMADA'
-  ).length;
+    // Contar estados para el año anterior
+    const presentadasAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadoini === 'PRESENTADA'
+    ).length;
+    const enEstudioAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadoini === 'EN ESTUDIO'
+    ).length;
+    const adjudicadasAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadofinal === 'ADJUDICADA'
+    ).length;
+    const noAdjudicadasAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadofinal === 'NO ADJUDICADA'
+    ).length;
+    const enResolucionAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadofinal === 'EN ESPERA RESOLUCIÓN'
+    ).length;
+    const desestimadasAnt = this.licitacionesFiltradasAnterior.filter(
+      (lic) => lic.estadofinal === 'DESESTIMADA'
+    ).length;
 
-  // --- NUEVO: calcular la suma de importes sólo de las adjudicadas (año anterior) ---
-  const sumaAdjudicadasAnt = this.licitacionesFiltradasAnterior
-    .filter((lic) => lic.estadofinal === 'ADJUDICADA')
-    .reduce((acc, lic) => {
-      const importeNum =
-        typeof lic.importe === 'number'
-          ? lic.importe
-          : parseFloat(String(lic.importe)) || 0;
-      return acc + importeNum;
-    }, 0);
+    // --- NUEVO: calcular la suma de importes sólo de las adjudicadas (año anterior) ---
+    const sumaAdjudicadasAnt = this.licitacionesFiltradasAnterior
+      .filter((lic) => lic.estadofinal === 'ADJUDICADA')
+      .reduce((acc, lic) => {
+        const importeNum =
+          typeof lic.importe === 'number'
+            ? lic.importe
+            : parseFloat(String(lic.importe)) || 0;
+        return acc + importeNum;
+      }, 0);
 
-  // Ahora sí armamos el array statsResumenAnterior, incluyendo sumImporte
-  this.statsResumenAnterior = [
-    {
-      label: 'Presentadas',
-      value: presentadasAnt,
-      color: '#1d84b5',
-      percent: Math.round((presentadasAnt / totalSafeAnt) * 100),
-    },
-    {
-      label: 'En Estudio',
-      value: enEstudioAnt,
-      color: '#ffa500',
-      percent: Math.round((enEstudioAnt / totalSafeAnt) * 100),
-    },
-    {
-      label: 'Adjudicadas',
-      value: adjudicadasAnt,
-      color: '#28a745',
-      percent: Math.round((adjudicadasAnt / totalSafeAnt) * 100),
-      sumImporte: sumaAdjudicadasAnt, // <-- aquí va la suma del año anterior
-    },
-    {
-      label: 'No Adjudicadas',
-      value: noAdjudicadasAnt,
-      color: '#dc3545',
-      percent: Math.round((noAdjudicadasAnt / totalSafeAnt) * 100),
-    },
-    {
-      label: 'En Resolución',
-      value: enResolucionAnt,
-      color: '#c63f17',
-      percent: Math.round((enResolucionAnt / totalSafeAnt) * 100),
-    },
-    {
-      label: 'Desestimadas',
-      value: desestimadasAnt,
-      color: '#6f42c1',
-      percent: Math.round((desestimadasAnt / totalSafeAnt) * 100),
-    },
-  ];
-}
-
+    // Ahora sí armamos el array statsResumenAnterior, incluyendo sumImporte
+    this.statsResumenAnterior = [
+      {
+        label: 'Presentadas',
+        value: presentadasAnt,
+        color: '#1d84b5',
+        percent: Math.round((presentadasAnt / totalSafeAnt) * 100),
+      },
+      {
+        label: 'En Estudio',
+        value: enEstudioAnt,
+        color: '#ffa500',
+        percent: Math.round((enEstudioAnt / totalSafeAnt) * 100),
+      },
+      {
+        label: 'Adjudicadas',
+        value: adjudicadasAnt,
+        color: '#28a745',
+        percent: Math.round((adjudicadasAnt / totalSafeAnt) * 100),
+        sumImporte: sumaAdjudicadasAnt, // <-- aquí va la suma del año anterior
+      },
+      {
+        label: 'No Adjudicadas',
+        value: noAdjudicadasAnt,
+        color: '#dc3545',
+        percent: Math.round((noAdjudicadasAnt / totalSafeAnt) * 100),
+      },
+      {
+        label: 'En Resolución',
+        value: enResolucionAnt,
+        color: '#c63f17',
+        percent: Math.round((enResolucionAnt / totalSafeAnt) * 100),
+      },
+      {
+        label: 'Desestimadas',
+        value: desestimadasAnt,
+        color: '#6f42c1',
+        percent: Math.round((desestimadasAnt / totalSafeAnt) * 100),
+      },
+    ];
+  }
 
   // =======================================================================
   // MÉTODOS DE MODALES PARA FECHAS (Interactúan con el servicio)
@@ -618,8 +617,21 @@ filtradoContadoresEstadosAnterior(): void {
   cancelDesdeModal() {
     this.desdeModal.dismiss();
   }
-  resetDesdeFecha() {
+  /**
+   * Este método deja vacía solo la “fechaDesde” en el servicio
+   * y actualiza los filtros para que se muestren todas las licitaciones.
+   */
+  resetDesdeFecha(): void {
+    // 1) En el servicio, ponemos fechaDesde a cadena vacía
+    this.servicioEstadisticas.setFechaDesde('');
+
+    // 2) En la variable temporal (para el modal) también vaciamos,
+    //    de modo que si vuelves a abrir el modal aparezca vacío.
     this.fechaDesdeTemp = '';
+
+    // 3) Vuelves a aplicar filtros: como no hay “desde”, el filtro no limitará nada hacia abajo,
+    //    y la lista mostrará todas las licitaciones.
+    this.aplicarFiltros();
   }
   applyDesdeModal() {
     this.servicioEstadisticas.setFechaDesde(this.fechaDesdeTemp);

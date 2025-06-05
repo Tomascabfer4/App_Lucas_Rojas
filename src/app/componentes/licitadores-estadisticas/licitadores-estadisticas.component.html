@@ -54,10 +54,15 @@
                 </thead>
                 <tbody>
                   <!-- 2) Filas de estadísticas por año -->
-                  <tr *ngFor="let y of yearEstadisticas" class="table-row year-row previous-year-row">
+                  <tr
+                    *ngFor="let y of yearEstadisticas"
+                    class="table-row year-row previous-year-row"
+                  >
                     <td class="nombre-cell">
                       <div class="nombre-with-action">
-                        <span class="nombre-text"><strong>AÑO {{ y.year }}</strong></span>
+                        <span class="nombre-text"
+                          ><strong>AÑO {{ y.year }}</strong></span
+                        >
                         <ion-button
                           fill="clear"
                           size="small"
@@ -69,36 +74,64 @@
                         </ion-button>
                       </div>
                     </td>
-                    <td><strong>{{ y.presentadas }}</strong></td>
-                    <td><strong>{{ y.enEstudio }}</strong></td>
-                    <td><strong>{{ y.adjudicadas }}</strong></td>
-                    <td><strong>{{ y.noAdjudicadas }}</strong></td>
-                    <td><strong>{{ y.desestimadas }}</strong></td>
-                    <td><strong>{{ y.importeFormateado }}</strong></td>
+                    <td>
+                      <strong>{{ y.presentadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ y.enEstudio }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ y.adjudicadas }}</strong>
+                      <strong>
+                        <small *ngIf="y.presentadas > 0">
+                          ({{
+                            (y.adjudicadas / y.presentadas) * 100
+                              | number : "1.0-0"
+                          }}%)
+                        </small>
+                        <small *ngIf="y.presentadas === 0"> (0%) </small>
+                      </strong>
+                    </td>
+                    <td>
+                      <strong>{{ y.noAdjudicadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ y.desestimadas }}</strong>
+                    </td>
+                    <td>
+                      <strong>{{ y.importeFormateado }}</strong>
+                    </td>
                   </tr>
                   <!-- FILA DE TOTALES -->
                   <tr class="table-row totals-row">
-                    <td><strong>TOTAL</strong></td>
+                    <td>TOTAL</td>
                     <td>
-                      <strong>{{ totalPresentadas }}</strong>
+                      {{ totalPresentadas }}
                     </td>
                     <td>
-                      <strong>{{ totalEnEstudio }}</strong>
+                      {{ totalEnEstudio }}
                     </td>
                     <td>
-                      <strong>{{ totalAdjudicadas }}</strong>
+                      {{ totalAdjudicadas }}
+                      <small *ngIf="totalPresentadas > 0">
+                        ({{
+                          (totalAdjudicadas / totalPresentadas) * 100
+                            | number : "1.0-0"
+                        }}%)
+                      </small>
+                      <small *ngIf="totalPresentadas === 0"> (0%) </small>
                     </td>
                     <td>
-                      <strong>{{ totalNoAdjudicadas }}</strong>
+                      {{ totalNoAdjudicadas }}
                     </td>
                     <td>
-                      <strong>{{ totalDesestimadas }}</strong>
+                      {{ totalDesestimadas }}
                     </td>
                     <td>
-                      <strong>{{
+                      {{
                         totalImporte
                           | currency : "EUR" : "symbol" : "1.2-2" : "es-ES"
-                      }}</strong>
+                      }}
                     </td>
                   </tr>
 
@@ -122,7 +155,18 @@
                     </td>
                     <td>{{ p.presentadas }}</td>
                     <td>{{ p.enEstudio }}</td>
-                    <td>{{ p.adjudicadas }}</td>
+                    <td>
+                      {{ p.adjudicadas }}
+                      <strong>
+                        <small *ngIf="totalAdjudicadas > 0">
+                          ({{
+                            (p.adjudicadas / totalAdjudicadas) * 100
+                              | number : "1.0-0"
+                          }}%)
+                        </small>
+                        <small *ngIf="p.presentadas === 0"> </small>
+                      </strong>
+                    </td>
                     <td>{{ p.noAdjudicadas }}</td>
                     <td>{{ p.desestimadas }}</td>
                     <td>{{ p.importeFormateado }}</td>
