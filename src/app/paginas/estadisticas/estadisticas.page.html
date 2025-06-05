@@ -30,11 +30,8 @@
                   {{ stat.value }}
                 </div>
                 <div class="stat-label">{{ stat.label }}</div>
-                <div class="stat-percent">{{ stat.percent }}% </div>
-                 <div
-                  *ngIf="stat.label === 'Adjudicadas'"
-                  class="stat-percent"
-                >
+                <div class="stat-percent">{{ stat.percent }}%</div>
+                <div *ngIf="stat.label === 'Adjudicadas'" class="stat-percent">
                   {{ stat.sumImporte | number:'1.2-2' }} €
                   <!-- Pipe number para formatear con 2 decimales -->
                 </div>
@@ -47,7 +44,10 @@
         <!-- ————— BLOQUE: ESTADÍSTICAS AÑO EN CURSO ————— -->
         <ion-card class="card-stats">
           <ion-card-header>
-            <ion-card-title>Año {{ anioFiltro }}</ion-card-title>
+            <ion-card-title>
+              {{ servicioEstadisticas.fechaDesde ? ('Año ' + anioFiltro) :
+              'Total' }}
+            </ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <div class="stats-container">
@@ -63,12 +63,9 @@
 
                 <!-- Etiqueta (por ejemplo: "Adjudicadas") -->
                 <div class="stat-label">{{ stat.label }}</div>
-                <div class="stat-percent">{{ stat.percent }}% </div>
+                <div class="stat-percent">{{ stat.percent }}%</div>
                 <!-- NUEVO: si este stat es "Adjudicadas", mostramos la suma de importes -->
-                <div
-                  *ngIf="stat.label === 'Adjudicadas'"
-                  class="stat-percent"
-                >
+                <div *ngIf="stat.label === 'Adjudicadas'" class="stat-percent">
                   {{ stat.sumImporte | number:'1.2-2' }} €
                   <!-- Pipe number para formatear con 2 decimales -->
                 </div>
@@ -174,7 +171,7 @@
                       </ion-chip>
                     </ion-item>
                     <ion-button
-                    color="success"
+                      color="success"
                       fill="outline"
                       expand="block"
                       (click)="resetDesdeFecha()"
